@@ -6,12 +6,24 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function(){
-            namespace = '/';
-            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
-
             var room_ = window.location.pathname;
 
             room_ = room_.substring(1, room_.length);
+            
+            // Add old questions:
+            // Call API
+            // Add them to Queue with timestamps, upvotes (use log.append)
+            $.post("/api/getRowsChron", function(data){
+                // Get question id
+                // POST question id only to api
+                for (var i = 0; i < data.questions.length; i++) {
+                    $('#log').append('<br> ' + data.questions[i] + ' ' + data.timestamps[i] + ' ' + data.upvotes[i]);
+                }
+            });
+
+            // Connect to socket
+            namespace = '/';
+            var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
 
 
             socket.emit('join', {room: room_});
@@ -51,7 +63,7 @@
 
         $('#FakeIdChronological').click(function(){
             $.get("/api/path/to/chronological", function(data){
-                
+
             });
         });
 

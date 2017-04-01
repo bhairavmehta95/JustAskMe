@@ -9,9 +9,12 @@ cursor_admins = db_admins.cursor()
 db_data.autocommit(True)
 db_admins.autocommit(True)
 
-def register_admin(admin_number,namespace):
+def add_admin(admin_number,namespace):
     cursor_admins.execute("""INSERT INTO admins (admin_number,namespace)
                        VALUE (%s,%s)""", (admin_number,namespace))
+
+def remove_admin(admin_number):
+    cursor_admins.execute("DELETE FROM admins WHERE admin_number="+str(admin_number))
 
 def remove_question(unique_id):
     cursor_data.execute("DELETE FROM questions WHERE QuestionID="+str(unique_id))
@@ -52,7 +55,7 @@ def show_questions(data):
 @app.route("/")
 def entry_action():
     add_question("added stupid question number 333333!","cs102")
-    register_admin(1212,"cs103")
+    add_admin(1212,"cs103")
     increment_upvotes_by_one(26)
     data = get_questions_sorted_answered("cs102")
     show_questions(data)

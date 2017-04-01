@@ -11,6 +11,8 @@
 
             var room_ = window.location.pathname;
 
+            room_ = room_.substring(1, room_.length);
+
 
             socket.emit('join', {room: room_});
 

@@ -1,105 +1,112 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,700italic);
 
-*{margin: 0px; padding: 0px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;}
 
-body{
-    font-family: 'Open Sans', sans-serif;
-}
-
-.btn{
-    text-decoration:none;
-    color:#333333;
-    font-size:12px;
-    font-weight:bold;
-    padding:0 15px;
-    line-height:32px;
-    height: auto;
-    display:inline-block;
+.namespace_value {
+    width:140px;
+    height:40px;
+    border:2px solid #34495e;
+    float:left;
     text-align:center;
-    background-color:#DDDDDD;
+    cursor:pointer;
+    position:relative;
+    box-sizing:border-box;
+    overflow:hidden;
+    margin:0 0 40px 0;
+    margin-right: 40px;
 }
 
-.btn.red{
-    background-color:#E53C38;
+.button-1{
+    width:140px;
+    height:40px;
+    border:2px solid #34495e;
+    float:right;
+    text-align:center;
+    cursor:pointer;
+    position:relative;
+    box-sizing:border-box;
+    border-radius: 25px;
+    overflow:hidden;
+    margin:0 0 40px 0;
+    margin-left: 40px;
+}
+.button-1 a{
+    font-family:arial;
+    font-size:16px;
+    color:#34495e;
+    text-decoration:none;
+    line-height:40px;
+    transition:all .5s ease;
+    z-index:2;
+    position:relative;
+}
+.button-1:hover a{
+    color:#fff;
 }
 
-.btn.red:hover{
-    background-color:#ea6360;
+.button-join{
+    border:2px solid #4CAF50;
+}
+.button-join a{
+    color:#4CAF50;
+}
+.eff-join{
+    width:140px;
+    height:40px;
+    top:-2px;
+    right:-140px;
+    background:#4CAF50;
+    position:absolute;
+    transition:all .5s ease;
+    z-index:1;
+}
+.button-join:hover .eff-join{
+    right:0;
+}
+.button-button-join:hover a{
+    color:#fff;
 }
 
-.btn.orange{
-    background-color:#FF8A3C;
+.button-create{
+    border:2px solid #FF4336;
+}
+.button-create a{
+    color:#FF4336;
+}
+.eff-create{
+    width:140px;
+    height:40px;
+    top:-2px;
+    right:-140px;
+    background:#FF4336;
+    position:absolute;
+    transition:all .5s ease;
+    z-index:1;
+}
+.button-create:hover .eff-create{
+    right:0;
+}
+.button-button-create:hover a{
+    color:#fff;
 }
 
-.btn.orange:hover{
-    background-color:#ffa163;
+input[type="text"] {
+    height: 40px;
+    width: 400px;
+    border: solid 2px #34495e;
+    padding: 10px;
+    font-family:arial;
+    font-size:16px;
+    color:#34495e;
+    text-decoration:none;
 }
 
-.btn.yellow{
-    background-color:#FFF852;
-}
-
-.btn.yellow:hover{
-    background-color:#fff975;
-}
-
-.btn.green{
-    background-color:#4BC94D;
-}
-
-.btn.green:hover{
-    background-color:#6fd471;
-}
-
-.btn.blue{
-    background-color:#5DADE2;
-}
-
-.btn.blue:hover{
-    background-color:#7dbde8;
-}
-
-.btn:hover{
-    background-color:#F6F6F6;
-}
-
-.btn.round{
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    border-radius: 3px;
-}
-
-.btn.pill{
-    -webkit-border-radius: 16px;
-    -moz-border-radius: 16px;
-    border-radius: 16px;
-}
-
-.btn-group > .btn.round:not(:first-child):not(:last-child), .btn-group > .btn.pill:not(:first-child):not(:last-child){
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
-}
-
-.btn-group > .btn.round:first-child, .btn-group > .btn.pill:first-child{
-    -webkit-border-top-right-radius: 0;
-    -webkit-border-bottom-right-radius: 0;
-    -moz-border-radius-topright: 0;
-    -moz-border-radius-bottomright: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-}
-
-.btn-group > .btn.round:last-child, .btn-group > .btn.pill:last-child{
-    -webkit-border-top-left-radius: 0;
-    -webkit-border-bottom-left-radius: 0;
-    -moz-border-radius-topleft: 0;
-    -moz-border-radius-bottomleft: 0;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-}
-
-.btn-group .btn + .btn{
-    border-left: 1px solid rgba(0, 0, 0, .1);
-    margin-left:-1px;
+.centered-div {
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 760px;
+    height: 40px;
 }

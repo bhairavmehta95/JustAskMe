@@ -48,6 +48,20 @@
                 return false;
             });
         });
+
+        $('#FakeIdChronological').click(function(){
+            $.get("/api/path/to/chronological", function(data){
+                
+            });
+        });
+
+        $('.upvote').click(function(){
+            $.post("/api/path/to/upvote", function(data){
+                // Get question id
+                // POST question id only to api
+            });
+        });
+
     </script>
 </head>
 <body>

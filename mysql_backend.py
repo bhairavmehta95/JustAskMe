@@ -31,6 +31,11 @@ def increment_upvotes_by_one(unique_id):
     upvotes_value = upvotes_value[0]+1
     cursor.execute("UPDATE questions SET upvotes="+str(upvotes_value)+" WHERE QuestionID="+str(unique_id))
 
+def get_admin_id_from_namespace(namespace):
+    cursor.execute("SELECT admin_number FROM admins WHERE namespace='{}'".format(namespace))
+    admin_id = cursor.fetchone()
+    return admin_id
+
 def show_rows(data):
     print_string = ""
     for row in data:

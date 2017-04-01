@@ -12,11 +12,71 @@ app = Flask(__name__)
 app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
 app.config['SECRET_KEY'] = 'secret!'
 
-
+from mysql_backend import *
 
 @app.route('/<room>')
 def index(room):
     return render_template('index.html')
+
+@app.route('/api/addRow', methods = ['POST'])
+def api_add_row():
+    json_data = json.dumps(request.json)
+    namespace = json_data['namespace']
+    question = json_data['question']
+    admin_id = get_admin_id_from_namespace(namespace)
+
+    add_row(admin_id, question, namespace)
+
+@app.route('/api/getRowsChron')
+def api_get_rows_chron():
+    json_data = json.dumps(request.json)
+    namespace = json_data['namespace']
+    
+    rows = get_rows_sorted_new(namespace)
+    questions = []
+    timestamps = []
+    upvotes = []
+
+    for val in rows:
+        if not val['answered']:
+            questions.append(val['string'])
+            timestamps.append(val['posted_time'])
+            upvotes.append(val['upvotes'])
+
+
+    return json.dumps({
+        'questions' : questions,
+        'timestamps' : timestamps
+        })
+
+
+@app.route('/api/getRowsTop')
+def api_get_rows_top():
+    json_data = json.dumps(request.json)
+    namespace = json_data['namespace']
+    
+    rows = get_rows_sorted_top(namespace)
+    questions = []
+    timestamps = []
+    upvotes = []
+
+    for val in rows:
+        if not val['answered']:
+            questions.append(val['string'])
+            timestamps.append(val['posted_time'])
+            upvotes.append(val['upvotes'])
+
+    return json.dumps({
+        'questions' : questions,
+        'timestamps' : timestamps
+        })
+
+@app.route('/api/addUpvote')
+def api_add_upvote():
+    json_data = json.dumps(request.json)
+    question = json_data['question']
+
+    increment_upvotes_by_one(question)
 
 
 @sio.on('my event', namespace='/')

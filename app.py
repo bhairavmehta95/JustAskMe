@@ -14,21 +14,22 @@ app.config['SECRET_KEY'] = 'secret!'
 
 from mysql_backend import *
 
-@app.route('/<room>')
+@app.route('/<room>', methods=['GET', 'POST'])
 def index(room):
     return render_template('index.html')
 
 @app.route('/api/addRow', methods = ['POST'])
 def api_add_row():
-    json_data = json.dumps(request.json)
+    json_data = request.json
     namespace = json_data['namespace']
     question = json_data['question']
 
     add_question(question, namespace)
 
-@app.route('/api/getRowsChron')
+@app.route('/api/getRowsChron', methods = ['POST'])
 def api_get_rows_chron():
-    json_data = json.dumps(request.json)
+    print(request.json)
+    json_data = request.json
     namespace = json_data['namespace']
     
     rows = get_questions_sorted_new(namespace)

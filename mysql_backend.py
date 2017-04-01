@@ -2,8 +2,8 @@ from flask import *
 import MySQLdb
 
 app = Flask(__name__)
-db_data = MySQLdb.connect(host="localhost", user="root", passwd="12345", db="ahhh_data")
-db_admins = MySQLdb.connect(host="localhost", user="root", passwd="12345", db="ahhh_admins")
+db_data = MySQLdb.connect(host="localhost", user="root", passwd="root", db="ahhh_data")
+db_admins = MySQLdb.connect(host="localhost", user="root", passwd="root", db="ahhh_admins")
 cursor_data = db_data.cursor()
 cursor_admins = db_admins.cursor()
 db_data.autocommit(True)

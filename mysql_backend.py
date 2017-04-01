@@ -24,12 +24,12 @@ def add_question(string,namespace):
     cursor_data.execute("""INSERT INTO questions (string,upvotes,posted_time,namespace,answered)
                        VALUE (%s,1,NOW(),%s,0)""", (string,namespace))
 
-def get_questions_sorted_top(namespace_value):
-    cursor_data.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"' ORDER BY upvotes")
+def get_questions_sorted_top_unanswered(namespace_value):
+    cursor_data.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'AND answered=0 ORDER BY upvotes")
     return cursor_data.fetchall()
 
-def get_questions_sorted_new(namespace_value):
-    cursor_data.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"' ORDER BY posted_time")
+def get_questions_sorted_new_unanswered(namespace_value):
+    cursor_data.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'AND answered=0 ORDER BY posted_time")
     return cursor_data.fetchall()
 
 def get_questions_sorted_answered(namespace_value):

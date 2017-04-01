@@ -53,7 +53,7 @@ def api_get_rows_chron():
 
 @app.route('/api/getRowsTop')
 def api_get_rows_top():
-    json_data = json.dumps(request.json)
+    json_data = request.json
     namespace = json_data['namespace']
     
     rows = get_questions_sorted_top(namespace)
@@ -75,11 +75,32 @@ def api_get_rows_top():
 
 @app.route('/api/addUpvote')
 def api_add_upvote():
-    json_data = json.dumps(request.json)
+    json_data = request.json
     unique_id = json_data['unique_id']
 
     increment_upvotes_by_one(unique_id)
 
+@app.route('/api/sortChron', methods = ['POST'])
+def sort_chronological():
+    json_data = request.json
+    namespace_value = request['namespace']
+    order = get_questions_sorted_new_unanswered(namespace_value)
+    return json.dumps({
+        'questions' = order['string']
+        'timestamps' = order['posted_time']
+        'upvotes' = order['upvotes']
+        })
+
+@app.route('/api/sortTop', methods = ['POST'])
+def sort_top():
+    json_data = request.json
+    namespace_value = request['namespace']
+    order = get_questions_sorted_top_unanswered(namespace_value)
+    return json.dumps({
+        'questions' = order['string']
+        'timestamps' = order['posted_time']
+        'upvotes' = order['upvotes']
+        })
 
 @sio.on('my event', namespace='/')
 def test_message(sid, message):

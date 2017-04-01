@@ -19,31 +19,35 @@
             }
 
             $.ajax({
-                    headers: { "Content-Type": "application/json"},
-                    url: '/api/getRowsChron',
-                    type: 'POST',
-                    data: JSON.stringify(DataToSend),
-                    success: function(data) {
-                        var he = data.responseText;
-                        obj = JSON.parse(data);
+                headers: { "Content-Type": "application/json"},
+                url: '/api/getRowsChron',
+                type: 'POST',
+                data: JSON.stringify(DataToSend),
+                success: function(data) {
+                    var he = data.responseText;
+                    obj = JSON.parse(data);
 
-                        // Do something with the result
-                        for (i = 0; i < obj.questions.length; i++) {
-                            $('#log').append('<br> ' + obj.questions[i] + ' ' + obj.timestamps[i] + ' ' + obj.upvotes[i]);
-                        }
-                    },
-                    error: function(data, status){
-                        to_return = "";
-                        
-                        var obj = JSON.parse(data.responseText);
-                        for(var i = 0; i < obj.errors.length; ++i){
-                            to_return = to_return + obj.errors[i].message + '<br>';
-                        }   
+                    // Do something with the result
+                    for (i = 0; i < obj.questions.length; i++) {
+                        // TODO: Make this into a function
+                        $('#log').append(
+                            '<div> <br> ' + obj.questions[i] + ' ' + obj.timestamps[i] + ' ' + obj.upvotes[i] +
+                            '<button class="up" id="' + obj.questions[i] + '"_up> Up </button> <button class="down" id="' + obj.questions[i] + '"_up> Down </button> <button class ="del" id="' + obj.questions[i] + '"_del> Del </button></div>'
+                             );
+                    }
+                },
+                error: function(data, status){
+                    to_return = "";
+                    
+                    var obj = JSON.parse(data.responseText);
+                    for(var i = 0; i < obj.errors.length; ++i){
+                        to_return = to_return + obj.errors[i].message + '<br>';
+                    }   
 
-                        // populate errors, leave bad update_email_input
-                        $('.error').html(to_return);
-                    },
-                });
+                    // populate errors, leave bad update_email_input
+                    $('.error').html(to_return);
+                },
+            });
 
             // Connect to socket
             namespace = '/';
@@ -60,10 +64,12 @@
             socket.on('my response', function(msg) {
                 $('#log').append('<br>Received: ' + msg.data);
             });
+
             // event handler for server sent data
             // the data is displayed in the "Received" section of the page
             // handlers for the different forms in the page
             // these send data to the server in a variety of ways
+
             $('form#emit').submit(function(event) {
                 socket.emit('my event', {data: $('#emit_data').val()});
                 return false;
@@ -80,13 +86,27 @@
                 socket.emit('disconnect request');
                 return false;
             });
+
+            $('button.up').click(function(){
+                alert('up!');
+            });
+
+            $('button.down').click(function(){
+                alert('down!');
+            });
+
+            $('button.del').click(function(){
+                alert('deleted');
+            });
         });
 
-        // $('#FakeIdChronological').click(function(){
-        //     $.get("/api/path/to/chronological", function(data){
 
-        //     });
-        // });
+
+        $('#sort_chron').click(function(){
+            $.get("/api/path/to/chronological", function(data){
+                
+            });
+        });
 
         // $('.upvote').click(function(){
         //     $.post("/api/path/to/upvote", function(data){
@@ -100,15 +120,17 @@
 <body>
     <h1>Flask-SocketIO Test</h1>
     <h2>Send:</h2>
- 
+    <button id="sort_chron"> Newest </button>
+    <button id="sort_top"> Top </button>
     <form id="send_room" method="POST" action='#'>
         <input type="text" name="room_data" id="room_data" placeholder="Message">
         <input type="submit" value="Send to Room">
     </form>
 
+    <div 
+
     </form>
     <h2>Receive:</h2>
-    <div><p id="log"></p></div>
+    <div id="log"></div>
 </body>
 </html>
-0

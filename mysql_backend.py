@@ -1,7 +1,5 @@
-from flask import *
 import MySQLdb
 
-app = Flask(__name__)
 db_data = MySQLdb.connect(host="localhost", user="root", passwd="root", db="ahhh_data")
 db_admins = MySQLdb.connect(host="localhost", user="root", passwd="root", db="ahhh_admins")
 cursor_data = db_data.cursor()
@@ -44,25 +42,3 @@ def increment_upvotes_by_one(unique_id):
     upvotes_value = upvotes_value[0]+1
     cursor_data.execute("UPDATE questions SET upvotes="+str(upvotes_value)+" WHERE QuestionID="+str(unique_id))
 
-def show_questions(data):
-    print_string = ""
-    for row in data:
-        print_string = print_string+"string = "      +str(row[1])+"\n"
-        print_string = print_string+"upvotes = "     +str(row[2])+"\n"
-        print_string = print_string+"posted_time = " +str(row[3])+"\n"
-        print_string = print_string+"namespace = "   +str(row[4])+"\n"
-        print_string = print_string+"answered = "    +str(row[5])+"\n"
-        print_string = print_string+"---------------\n"
-    print(print_string)
-
-@app.route("/")
-def entry_action():
-    add_question("added stupid question number 333333!","cs102")
-    add_admin(1212,"cs103")
-    increment_upvotes_by_one(26)
-    data = get_questions_sorted_answered("cs102")
-    show_questions(data)
-    return ""
-
-if __name__ == "__main__":
-    app.run()

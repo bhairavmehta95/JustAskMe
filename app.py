@@ -4,7 +4,7 @@
 async_mode = None
 
 import time
-from flask import Flask, render_template
+from flask import *
 import socketio
 
 sio = socketio.Server(logger=True, async_mode=async_mode)
@@ -14,7 +14,7 @@ app.config['SECRET_KEY'] = 'secret!'
 
 from mysql_backend import *
 
-@app.route('/<room>', methods=['GET', 'POST'])
+@app.route('/<room>')
 def index(room):
     return render_template('index.html')
 
@@ -28,7 +28,6 @@ def api_add_row():
 
 @app.route('/api/getRowsChron', methods = ['POST'])
 def api_get_rows_chron():
-    print(request.json)
     json_data = request.json
     namespace = json_data['namespace']
     
@@ -37,13 +36,14 @@ def api_get_rows_chron():
     timestamps = []
     upvotes = []
 
+    print(rows)
+
     for val in rows:
-        if not val['answered']:
-            questions.append(val['string'])
-            timestamps.append(val['posted_time'])
-            upvotes.append(val['upvotes'])
-
-
+        if not val[5]:
+            questions.append(val[1])
+            upvotes.append(val[2])
+            timestamps.append(val[3])
+            
     return json.dumps({
         'questions' : questions,
         'timestamps' : timestamps,
@@ -118,6 +118,8 @@ def close(sid, message):
 def send_room_message(sid, message):
     sio.emit('my response', {'data': message['data']}, room=message['room'],
              namespace='/')
+    add_question(message['data'], message['room'])
+    print("added message", message['data'])
 
 
 @sio.on('disconnect request', namespace='/')

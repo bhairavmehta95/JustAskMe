@@ -6,50 +6,51 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function(){
-            //var room_ = window.location.pathname.toString();
+            var room_ = window.location.pathname.toString();
 
-            //room_ = room_.substr(1, room_.length);
+            room_ = room_.substr(1, room_.length);
             
-            // Add old questions:
+                // Add old questions:
             // Call API
             // Add them to Queue with timestamps, upvotes (use log.append)
-            // var DataToSend = new Object();
-            // DataToSend = {
-            //     namespace : room_
-            // }
+            var DataToSend = new Object();
+            DataToSend = {
+                namespace : room_
+            }
 
-            // $.ajax({
-            //         headers: { "Content-Type": "application/json"},
-            //         url: '/api/getRowsChron',
-            //         type: 'POST',
-            //         data: JSON.stringify(DataToSend),
-            //         success: function(data) {
-            //             var obj = JSON.parse(data);
+            $.ajax({
+                    headers: { "Content-Type": "application/json"},
+                    url: '/api/getRowsChron',
+                    type: 'POST',
+                    data: JSON.stringify(DataToSend),
+                    success: function(data) {
+                        var he = data.responseText;
+                        obj = JSON.parse(data);
 
-            //             // Do something with the result
-            //             for (var i = 0; i < obj.questions.length; i++) {
-            //                 $('#log').append('<br> ' + obj.questions[i] + ' ' + obj.timestamps[i] + ' ' + obj.upvotes[i]);
-            //             }
-            //         },
-            //         error: function(data, status){
-            //             to_return = "";
+                        // Do something with the result
+                        for (i = 0; i < obj.questions.length; i++) {
+                            $('#log').append('<br> ' + obj.questions[i] + ' ' + obj.timestamps[i] + ' ' + obj.upvotes[i]);
+                        }
+                    },
+                    error: function(data, status){
+                        to_return = "";
                         
-            //             var obj = JSON.parse(data.responseText);
-            //             for(var i = 0; i < obj.errors.length; ++i){
-            //                 to_return = to_return + obj.errors[i].message + '<br>';
-            //             }   
+                        var obj = JSON.parse(data.responseText);
+                        for(var i = 0; i < obj.errors.length; ++i){
+                            to_return = to_return + obj.errors[i].message + '<br>';
+                        }   
 
-            //             // populate errors, leave bad update_email_input
-            //             $('.error').html(to_return);
-            //         },
-            //     });
+                        // populate errors, leave bad update_email_input
+                        $('.error').html(to_return);
+                    },
+                });
 
             // Connect to socket
             namespace = '/';
             var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
-            // var room_ = window.location.pathname;
-            // room_ = room_.substring(1, room_.length);
-            // socket.emit('join', {room: room_});
+            var room_ = window.location.pathname;
+            room_ = room_.substring(1, room_.length);
+            socket.emit('join', {room: room_});
             socket.on('connect', function() {
                 socket.emit('my event', {data: 'I\'m connected!'});
             });

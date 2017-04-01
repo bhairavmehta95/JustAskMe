@@ -23,16 +23,15 @@ def api_add_row():
     json_data = json.dumps(request.json)
     namespace = json_data['namespace']
     question = json_data['question']
-    admin_id = get_admin_id_from_namespace(namespace)
 
-    add_row(admin_id, question, namespace)
+    add_question(question, namespace)
 
 @app.route('/api/getRowsChron')
 def api_get_rows_chron():
     json_data = json.dumps(request.json)
     namespace = json_data['namespace']
     
-    rows = get_rows_sorted_new(namespace)
+    rows = get_questions_sorted_new(namespace)
     questions = []
     timestamps = []
     upvotes = []
@@ -46,7 +45,8 @@ def api_get_rows_chron():
 
     return json.dumps({
         'questions' : questions,
-        'timestamps' : timestamps
+        'timestamps' : timestamps,
+        'upvotes' : upvotes
         })
 
 
@@ -55,7 +55,7 @@ def api_get_rows_top():
     json_data = json.dumps(request.json)
     namespace = json_data['namespace']
     
-    rows = get_rows_sorted_top(namespace)
+    rows = get_questions_sorted_top(namespace)
     questions = []
     timestamps = []
     upvotes = []
@@ -68,15 +68,16 @@ def api_get_rows_top():
 
     return json.dumps({
         'questions' : questions,
-        'timestamps' : timestamps
+        'timestamps' : timestamps,
+        'upvotes' : upvotes
         })
 
 @app.route('/api/addUpvote')
 def api_add_upvote():
     json_data = json.dumps(request.json)
-    question = json_data['question']
+    unique_id = json_data['unique_id']
 
-    increment_upvotes_by_one(question)
+    increment_upvotes_by_one(unique_id)
 
 
 @sio.on('my event', namespace='/')

@@ -13,6 +13,9 @@ def add_admin(admin_number,namespace):
     cursor_admins.execute("""INSERT INTO admins (admin_number,namespace)
                        VALUE (%s,%s)""", (admin_number,namespace))
 
+def get_admin_number(namespace):
+    cursor_admins.execute("SELECT * FROM admins WHERE namespace='"+namespace)
+
 def remove_admin(admin_number):
     cursor_admins.execute("DELETE FROM admins WHERE admin_number="+str(admin_number))
 

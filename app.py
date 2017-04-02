@@ -163,6 +163,7 @@ def close(sid, message):
 def send_room_message(sid, message):
     sio.emit('my response', {'data': message['data']}, room=message['room'],
              namespace='/')
+    add_question(message['data'], message['room'])
 
 @sio.on('disconnect request', namespace='/')
 def disconnect_request(sid):

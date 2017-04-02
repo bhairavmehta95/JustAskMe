@@ -1,11 +1,37 @@
+from flask import *
 import MySQLdb
 
-db_data = MySQLdb.connect(host="localhost", user="root", passwd="root", db="ahhh_data")
-db_admins = MySQLdb.connect(host="localhost", user="root", passwd="root", db="ahhh_admins")
-cursor_data = db_data.cursor()
-cursor_admins = db_admins.cursor()
-db_data.autocommit(True)
-db_admins.autocommit(True)
+db = MySQLdb.connect(host="localhost", user="root", passwd="12345", db="ahhh_data")
+cursor = db.cursor()
+db.autocommit(True)
+
+def remove_row(unique_id):
+    cursor.execute("DELETE FROM questions WHERE QuestionID="+str(unique_id));
+
+def add_row(admin_id,string,namespace):
+    cursor.execute("""INSERT INTO questions (admin_id,string,upvotes,posted_time,namespace,answered)
+                       VALUE (%s,%s,1,NOW(),%s,0)""", (str(admin_id),string,namespace))
+
+def get_rows(namespace_value):
+    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'")
+    return cursor.fetchall()
+
+def count_namespace(namespace_value):
+    cursor_data.execute("SELECT COUNT(*) FROM questions WHERE namespace='"+namespace_value+"'")
+    return cursor_data.fetchall()
+
+def increment_upvotes_by_one(unique_id):
+    cursor.execute("SELECT upvotes FROM questions WHERE QuestionID="+str(unique_id))
+    upvotes_value = cursor.fetchone()
+    upvotes_value = upvotes_value[0]+1
+    cursor.execute("UPDATE questions SET upvotes="+str(upvotes_value)+" WHERE QuestionID="+str(unique_id))
+
+# db_data = MySQLdb.connect(host="localhost", user="root", passwd="root", db="ahhh_data")
+# db_admins = MySQLdb.connect(host="localhost", user="root", passwd="root", db="ahhh_admins")
+# cursor_data = db_data.cursor()
+# cursor_admins = db_admins.cursor()
+# db_data.autocommit(True)
+# db_admins.autocommit(True)
 
 def add_admin(admin_number,namespace):
     cursor_admins.execute("""INSERT INTO admins (admin_number,namespace)
@@ -41,4 +67,3 @@ def increment_upvotes_by_one(unique_id):
     upvotes_value = cursor_data.fetchone()
     upvotes_value = upvotes_value[0]+1
     cursor_data.execute("UPDATE questions SET upvotes="+str(upvotes_value)+" WHERE QuestionID="+str(unique_id))
-

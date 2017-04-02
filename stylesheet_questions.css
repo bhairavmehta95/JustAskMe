@@ -1,0 +1,331 @@
+* {
+    font-family: "Open Sans", Arial, Helvetica, Sans-Serif;
+}
+
+body {
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 50px;
+    background-color: #1f1f1f;
+}
+
+.question {
+    /*border-bottom: dashed 1px #d5d5d5;*/
+    /*width: 100%;*/
+    display:block;
+    overflow:auto;
+    padding : 10px;
+    margin : 10px;
+    background-color: white;
+    -webkit-box-shadow: inset 0px 0px 7px -1px rgba(0,0,0,0.62);
+    -moz-box-shadow: inset 0px 0px 7px -1px rgba(0,0,0,0.62);
+    box-shadow: inset 0px 0px 7px -1px rgba(0,0,0,0.62);
+}
+
+.question_tools {
+    display: table;
+    /*background-color: #e54040;*/
+    float: left;
+}
+
+.question_tools a {
+    color: black;
+}
+
+.voting_tools .voting_all {
+    color: black;
+}
+
+.voting_tools {
+    height: 100%;
+    width: 30px;
+    float: left;
+    /*background-color: #e54040;*/
+}
+
+.voting_arrow_up, .voting_arrow_down, .vote_count {
+    width: 100%;
+    text-align: center;
+    /*background-color: yellow;*/
+}
+
+.voting_arrow_up a:hover,
+.voting_arrow_up a:active {
+    color: green;
+}
+
+.voting_arrow_down a:hover,
+.voting_arrow_down a:active {
+    color: red;
+}
+
+.vote_count {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.admin_delete_centering {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 3px;
+    padding-right: 3px;
+    width: 10px;
+}
+
+.admin_delete_centering .trash,
+.admin_delete_centering .mark_answered {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 2px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.admin_delete_centering .trash:hover,
+.admin_delete_centering .trash:active {
+    background-color: red;
+}
+
+.admin_delete_centering .trash:hover a,
+.admin_delete_centering .trash:active a {
+    color: white;
+}
+
+.admin_delete_centering .mark_answered:hover,
+.admin_delete_centering .mark_answered:active {
+    background-color: green;
+}
+
+.admin_delete_centering .mark_answered:hover a,
+.admin_delete_centering .mark_answered:active a {
+    color: white;
+}
+
+.question_content {
+    overflow: hidden;
+    padding-left: 10px;
+    padding-bottom: 5px;
+}
+
+.bottom_panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: solid 1px #e5dee3;
+    background-color: white;
+}
+
+.become_admin {
+    width: 100%;
+    height: 40px;
+    /*height: 35px;*/
+}
+
+.new_question_button {
+    float: right;
+    width: 17px;
+    padding : 5px;
+    border: solid 2px black;
+    border-radius: 40px;
+    margin: 5px;
+    text-align: center;
+    background-color: white;
+    color: black;
+    border-color: black;
+}
+
+.key_button {
+    float: right;
+    width: 17px;
+    padding : 5px;
+    border: solid 2px black;
+    border-radius: 40px;
+    margin: 5px;
+    text-align: center;
+    background-color: white;
+    color: black;
+    border-color: black;
+}
+
+.key_button.activate {
+    background-color: red;
+    color: white;
+    border-color: red;
+}
+
+.new_question_button.activate {
+    background-color: green;
+    color: white;
+    border-color: green;
+}
+
+.key_button:hover,
+.key_button:active {
+    background-color: red;
+}
+
+.new_question_button:hover,
+.new_question_button:active {
+    background-color: green;
+}
+
+.key_button:hover,
+.key_button:active,
+.new_question_button:hover,
+.new_question_button:active {
+    cursor: pointer;
+}
+
+.become_admin nav {
+    float: left;
+    padding-left: 10px;
+    position: relative;
+    z-index: 10;
+}
+
+.become_admin nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.become_admin nav li {
+    display: inline-block;
+    font-size: 12px;
+    font-family: "Oswald", sans-serif;
+    font-weight: 300;
+    line-height: 40px;
+}
+
+.become_admin nav li a {
+    color: black;
+    text-decoration: none;
+    padding-right: 10px;
+}
+
+.become_admin nav li a:hover,
+.become_admin nav li a:active {
+    color: black;
+    text-decoration: underline;
+}
+
+.admin_code {
+    float: right;
+    height: 30px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 200px;
+    display: none;
+}
+
+.admin_code input {
+    border: none;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ff7d83;
+    padding-left: 10px;
+    margin-left: -10px;
+}
+
+.write_new_question {
+    height: 200px;
+    display: none;
+    border-top: solid 1px #e5dee3;
+    padding: 10px;
+}
+
+.new_question_formulation {
+    /*margin: 10px;*/
+    height: 150px;
+    overflow: none;
+    box-sizing:border-box;
+    width: 100%;
+}
+
+.submit_button_container {
+    float: right;
+    margin-top: 5px;
+    width: 130px;
+    height: 40px;
+    text-align: center;
+}
+button {
+    font-family: 'Roboto', sans-serif;
+    outline: none;
+    height: 40px;
+    text-align: center;
+    width: 130px;
+    border-radius: 40px;
+    background: #fff;
+    border: 2px solid #1ECD97;
+    color: #1ECD97;
+    letter-spacing: 1px;
+    text-shadow: 0;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    -webkit-transition: all 0.25s ease;
+    transition: all 0.25s ease;
+}
+button:hover {
+    color: white;
+    background: #1ECD97;
+}
+button:active {
+    letter-spacing: 2px;
+}
+button:after {
+    content: "SUBMIT";
+}
+
+.onclic {
+    width: 40px;
+    border-color: #bbbbbb;
+    border-width: 3px;
+    font-size: 0;
+    border-left-color: #1ECD97;
+    -webkit-animation: rotating 2s 0.25s linear infinite;
+    animation: rotating 2s 0.25s linear infinite;
+}
+.onclic:after {
+    content: "";
+}
+.onclic:hover {
+    color: #1ECD97;
+    background: white;
+}
+
+.validate {
+    font-size: 13px;
+    color: white;
+    background: #1ECD97;
+}
+.validate:after {
+    font-family: 'FontAwesome';
+    content: "\f00c";
+}
+
+@-webkit-keyframes rotating {
+    from {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotating {
+    from {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    to {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

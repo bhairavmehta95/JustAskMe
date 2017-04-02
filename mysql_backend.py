@@ -1,40 +1,50 @@
 from flask import *
 import MySQLdb
 
+
 db = MySQLdb.connect(host="ahhh-db.cq2tyrgbq4kh.us-west-2.rds.amazonaws.com", port=3306, user="ahhh", passwd="password", db="ahhh_db")
 cursor = db.cursor()
 db.autocommit(True)
-
 
 def add_admin(admin_number,namespace):
     cursor.execute("""INSERT INTO admins (admin_number,namespace)
                        VALUE (%s,%s)""", (admin_number,namespace))
 
+# Get the admin passcode corresponding to the namespace
+# TODO encryption! This is not safe...
 def get_admin_number(namespace):
     cursor.execute("SELECT * FROM admins WHERE namespace='"+namespace)
 
+# Remove admin passcode from namespace
 def remove_admin(admin_number):
     cursor.execute("DELETE FROM admins WHERE admin_number="+str(admin_number))
 
+# Remove a question from database based on its unique ID
 def remove_question(unique_id):
     cursor.execute("DELETE FROM questions WHERE QuestionID="+str(unique_id))
 
+# Add question to database corresponding to the namespace
 def add_question(string,namespace):
     cursor.execute("""INSERT INTO questions (string,upvotes,posted_time,namespace,answered)
                        VALUE (%s,1,NOW(),%s,0)""", (string,namespace))
 
+# Sort unanswered questions by their number of upvotes
 def get_questions_sorted_top_unanswered(namespace_value):
     cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'AND answered=0 ORDER BY upvotes")
     return cursor.fetchall()
 
+# Sort unanswered questions with newest first
 def get_questions_sorted_new_unanswered(namespace_value):
     cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'AND answered=0 ORDER BY posted_time")
     return cursor.fetchall()
 
+# Get the answered questions, ordered chronologically
 def get_questions_sorted_answered(namespace_value):
-    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"' AND answered=1")
+    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"' AND answered=1 ORDER BY posted_time")
     return cursor.fetchall()
 
+
+# Increase by one the number of upvotes of question corresopnding to unique ID
 def increment_upvotes_by_one(unique_id):
     cursor.execute("SELECT upvotes FROM questions WHERE QuestionID="+str(unique_id))
     upvotes_value = cursor.fetchone()

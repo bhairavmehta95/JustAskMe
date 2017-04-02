@@ -15,7 +15,7 @@ sio = socketio.Server(logger=True, async_mode=async_mode)
 app = Flask(__name__)
 app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
 app.config['SECRET_KEY'] = 'secret!'
-app.secret_key = 'es2uD2da32h4fRV328u5eg7T41e08dqy7ufhd2du'	#  TODO: make better
+app.secret_key = 'UyMiN5k5OMvQVxJHQT6dYf8jP1RtR7lUJ19iErAc'	#  TODO: make better
 
 @app.route('/')
 def default():
@@ -27,7 +27,9 @@ def default():
 def index(room):
   if (request.method == 'POST'):
     if not request.POST.get('is_in_use'):
-      pass# Set admin,
+      new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))#gen rand letters
+      session[room] = new_passw		# New cookie
+      add_admin(new_passw,room)		# Add a new admin to the admin table
     render_template('index.html')    
   elif (request.method == 'GET'):
     render_template('index.html')

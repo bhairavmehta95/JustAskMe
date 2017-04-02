@@ -102,6 +102,32 @@
     margin-left: 5px;
     margin-right: 5px;
     text-align: center;
+    background-color: white;
+}
+
+.key_button.activate {
+    background-color: red;
+}
+
+.new_question_button.activate {
+    background-color: green;
+}
+
+.key_button:hover,
+.key_button:active {
+    background-color: red;
+}
+
+.new_question_button:hover,
+.new_question_button:active {
+    background-color: green;
+}
+
+.key_button:hover,
+.key_button:active,
+.new_question_button:hover,
+.new_question_button:active {
+    cursor: pointer;
 }
 
 .become_admin nav {
@@ -139,9 +165,9 @@
 
 .admin_code {
     float: right;
-    background-color: yellow;
     height: 33px;
     width: 200px;
+    display: none;
 }
 .admin_code input {
     border: none;

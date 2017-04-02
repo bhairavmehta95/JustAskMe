@@ -1,8 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="stylesheet_questions.css">
+    <meta charset="UTF-8">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">-->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="stylesheet_questions.css">
+    <script src="ui_effects_questions.js"></script>
 </head>
 <body>
 
@@ -22,24 +28,26 @@
     </div>
 </div>
 
-<div class="become_admin">
-    <nav class="views">
-        <ul>
-            <li><a href="#">Newest</a></li>
-            <li><a href="#">Top</a></li>
-            <li><a href="#">Answered</a></li>
-        </ul>
-    </nav>
-    <div class="new_question_button">
-        <i class="fa fa-question" aria-hidden="true"></i>
+<!--<div class="bottom_panel">-->
+    <div class="become_admin">
+        <nav class="views">
+            <ul>
+                <li><a href="#">Newest</a></li>
+                <li><a href="#">Top</a></li>
+                <li><a href="#">Answered</a></li>
+            </ul>
+        </nav>
+        <div class="new_question_button">
+            <i class="fa fa-question" aria-hidden="true"></i>
+        </div>
+        <div class="key_button" id="key_button">
+            <i class="fa fa-key" aria-hidden="true"></i>
+        </div>
+        <div class="admin_code">
+            <input type="text" name="admin_code_input" id="admin_code_input" placeholder="Enter admin code">
+        </div>
     </div>
-    <div class="key_button">
-        <i class="fa fa-key" aria-hidden="true"></i>
-    </div>
-    <div class="admin_code">
-        <input type="text" name="admin_code_input" id="admin_code_input" placeholder="Enter admin code">
-    </div>
-</div>
+<!--</div>-->
 
 </body>
 </html>

@@ -86,9 +86,9 @@ def sort_chronological():
     namespace_value = request['namespace']
     order = get_questions_sorted_new_unanswered(namespace_value)
     return json.dumps({
-        'questions' = order['string']
-        'timestamps' = order['posted_time']
-        'upvotes' = order['upvotes']
+        'questions' : order['string'],
+        'timestamps' : order['posted_time'],
+        'upvotes'  :order['upvotes']
         })
 
 @app.route('/api/sortTop', methods = ['POST'])
@@ -97,9 +97,9 @@ def sort_top():
     namespace_value = request['namespace']
     order = get_questions_sorted_top_unanswered(namespace_value)
     return json.dumps({
-        'questions' = order['string']
-        'timestamps' = order['posted_time']
-        'upvotes' = order['upvotes']
+        'questions' : order['string'],
+        'timestamps' : order['posted_time'],
+        'upvotes' : order['upvotes']
         })
 
 @sio.on('my event', namespace='/')

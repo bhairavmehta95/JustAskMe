@@ -24,28 +24,21 @@
                 type: 'POST',
                 data: JSON.stringify(DataToSend),
                 success: function(data) {
-                    var he = data.responseText;
-                    obj = JSON.parse(data);
+                    obj = data;
 
                     // Do something with the result
-                    for (i = 0; i < obj.questions.length; i++) {
-                        // TODO: Make this into a function
-                        $('#log').append(
-                            '<div> <br> ' + obj.questions[i] + ' ' + obj.timestamps[i] + ' ' + obj.upvotes[i] +
-                            '<button class="up" id="' + obj.questions[i] + '"_up> Up </button> <button class="down" id="' + obj.questions[i] + '"_up> Down </button> <button class ="del" id="' + obj.questions[i] + '"_del> Del </button></div>'
-                             );
+                    if (obj.questions.length){
+                        for (i = 0; i < obj.questions.length; i++) {
+                            // TODO: Make this into a function
+                            $('#log').append(
+                                '<div> <br> ' + obj.questions[i] + ' ' + obj.timestamps[i] + ' ' + obj.upvotes[i] +
+                                '<button class="up" id="' + obj.questions[i] + '"_up> Up </button> <button class="down" id="' + obj.questions[i] + '"_up> Down </button> <button class ="del" id="' + obj.questions[i] + '"_del> Del </button></div>'
+                                 );
+                        }
                     }
                 },
                 error: function(data, status){
-                    to_return = "";
-                    
-                    var obj = JSON.parse(data.responseText);
-                    for(var i = 0; i < obj.errors.length; ++i){
-                        to_return = to_return + obj.errors[i].message + '<br>';
-                    }   
-
-                    // populate errors, leave bad update_email_input
-                    $('.error').html(to_return);
+                    return_val = '';
                 },
             });
 

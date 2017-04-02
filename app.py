@@ -6,13 +6,15 @@ async_mode = None
 import time
 import os
 import random, string
-from flask import Flask, render_template, redirect, url_for
+from flask import *
+
 import socketio
 
 sio = socketio.Server(logger=True, async_mode=async_mode)
 app = Flask(__name__)
 app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
 app.config['SECRET_KEY'] = 'secret!'
+app.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
 
 @app.route('/')
 if (request.method == 'GET'):
@@ -32,9 +34,95 @@ elif (request.method == 'POST'):
         pass	# until code is written     
       return redirect(url_for("###get namespace from textbox###"), code=307)
 
+
 @app.route('/<room>')
 def index(room):
     return render_template('index.html')
+
+
+@app.route('/api/addRow', methods = ['POST'])
+def api_add_row():
+    json_data = request.json
+    namespace = json_data['namespace']
+    question = json_data['question']
+
+    add_question(question, namespace)
+
+@app.route('/api/getRowsChron', methods = ['POST'])
+def api_get_rows_chron():
+    json_data = request.json
+    namespace = json_data['namespace']
+    
+    rows = get_questions_sorted_new(namespace)
+    questions = []
+    timestamps = []
+    upvotes = []
+
+    print(rows)
+
+    for val in rows:
+        if not val[5]:
+            questions.append(val[1])
+            upvotes.append(val[2])
+            timestamps.append(val[3])
+            
+    return json.dumps({
+        'questions' : questions,
+        'timestamps' : timestamps,
+        'upvotes' : upvotes
+        })
+
+
+@app.route('/api/getRowsTop')
+def api_get_rows_top():
+    json_data = request.json
+    namespace = json_data['namespace']
+    
+    rows = get_questions_sorted_top(namespace)
+    questions = []
+    timestamps = []
+    upvotes = []
+
+    for val in rows:
+        if not val['answered']:
+            questions.append(val['string'])
+            timestamps.append(val['posted_time'])
+            upvotes.append(val['upvotes'])
+
+    return json.dumps({
+        'questions' : questions,
+        'timestamps' : timestamps,
+        'upvotes' : upvotes
+        })
+
+@app.route('/api/addUpvote')
+def api_add_upvote():
+    json_data = request.json
+    unique_id = json_data['unique_id']
+
+    increment_upvotes_by_one(unique_id)
+
+@app.route('/api/sortChron', methods = ['POST'])
+def sort_chronological():
+    json_data = request.json
+    namespace_value = request['namespace']
+    order = get_questions_sorted_new_unanswered(namespace_value)
+    return json.dumps({
+        'questions' = order['string']
+        'timestamps' = order['posted_time']
+        'upvotes' = order['upvotes']
+        })
+
+@app.route('/api/sortTop', methods = ['POST'])
+def sort_top():
+    json_data = request.json
+    namespace_value = request['namespace']
+    order = get_questions_sorted_top_unanswered(namespace_value)
+    return json.dumps({
+        'questions' = order['string']
+        'timestamps' = order['posted_time']
+        'upvotes' = order['upvotes']
+        })
 
 
 @sio.on('my event', namespace='/')
@@ -75,7 +163,6 @@ def send_room_message(sid, message):
     sio.emit('my response', {'data': message['data']}, room=message['room'],
              namespace='/')
 
-
 @sio.on('disconnect request', namespace='/')
 def disconnect_request(sid):
     sio.disconnect(sid, namespace='/')
@@ -93,7 +180,6 @@ def test_disconnect(sid):
 
 
 if __name__ == '__main__':
-    app.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
     if sio.async_mode == 'threading':
         # deploy with Werkzeug
         app.run(threaded=True)

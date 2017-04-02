@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Load things related to jQuery and  -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css'>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet_questions.css') }}">
+    <!-- <script type = "text/javascript" src="{{ url_for('static', filename='js/ui_effects_questions.js') }}"></script> -->
+
+<script>
+$(document).ready(function() {
+    $(".key_button").click(function(){
+        if ($(this).hasClass("activate")) { // TODO do not disactivate if user is an admin! This is "feedback" that user is admin
+            $(this).removeClass("activate");
+            $('.admin_code').animate({width: 'toggle'}, {duration: 200});
+        } else {
+            $(this).addClass("activate");
+            $('.admin_code').animate({width: 'toggle'}, {duration: 200});
+        }
+    });
+    $(".new_question_button").click(function(){
+        if ($(this).hasClass("activate")) {
+            $(this).removeClass("activate");
+            $('.write_new_question').animate({height: 'toggle'}, {duration: 200});
+        } else {
+            $(this).addClass("activate");
+            $('.write_new_question').animate({height: 'toggle'}, {duration: 200});
+        }
+    });
+});
+
+$(function() {
+    $( "#button" ).click(function() {
+        $( "#button" ).addClass( "onclic", 250, validate);
+    });
+
+    function validate() {
+        setTimeout(function() {
+            $( "#button" ).removeClass( "onclic" );
+            $( "#button" ).addClass( "validate", 450, callback );
+        }, 2250 );
+    }
+    function callback() {
+        setTimeout(function() {
+            $( "#button" ).removeClass( "validate" );
+        }, 1250 );
+    }
+});
+
+$(document).ready( function() {
+
+    namespace = '/';
+
+    var room_ = window.location.pathname.toString();
+
+    room_ = room_.substr(1, room_.length);
+    var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+
+    socket.emit('join', {room: room_});
+
+    socket.on('connect', function() {
+        socket.emit('my event', {data: 'I\'m connected!'});
+    });
+    socket.on('disconnect', function() {
+        $('.log').append('<br>Disconnected');
+    });
+
+    socket.on('my response', function(msg) {
+        console.log('<br>Received: ' + msg.data);
+        var DataToSend = new Object();
+        DataToSend = {
+            namespace : room_
+        }
+
+        $.ajax({
+            headers: { "Content-Type": "application/json"},
+            url: '/api/getRowsChron',
+            type: 'POST',
+            data: JSON.stringify(DataToSend),
+            success: function(data) {
+                obj = JSON.parse(data);
+                $('.question_area').empty();
+
+                // Do something with the result
+                if (obj.questions.length){
+                    for (i = 0; i < obj.questions.length; i++) {
+                        // TODO: Make this into a function
+                        var html_to_add  = '<div class="question">\
+                            <div class="question_tools">\
+                            <div class="voting_tools" id="' + obj.unique_ids[i] + '">' + 
+                                '<div class="voting_arrow_up"><a href="" onclick="return false;" title="Upvote +1"><i class="fa fa-chevron-up" aria-hidden="true"></i></a></div>\
+                                <div class="vote_count">' + obj.upvotes[i] + '</div>\
+                                <div class="voting_arrow_down"><a href="" onclick="return false;"  title="Downvote -1"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>\
+                            </div>\
+                            </div>'
+                        {% if room in session %}                   
+                            var second_var =   '<div class="admin_delete_centering" id="' + obj.unique_ids[i] + '">\
+                            <div class="mark_answered">\
+                            <a href="#" title="Mark as read"><i class="fa fa-check" aria-hidden="true"></i></a>\
+                            </div>\
+                            <div class="trash">\
+                            <a href="#" title="Delete permanently"><i class="fa fa-trash-o" aria-hidden="true"></i></a>\
+                            </div>\
+                            </div>'
+
+                            html_to_add = html_to_add + second_var;
+                        {% endif %}
+
+                        
+
+                        var content = '</div><div class="question_content"> ' + obj.questions[i] + '</div> </div>';
+                        $('.question_area').append(html_to_add + content); // append question_area
+                    }
+                }
+
+                $('.voting_arrow_up').click(function(){
+                    var DataToSend = new Object();
+                    $( this).addClass( "hover" );
+                    console.log("all");
+                    unique_id = $(this).parent().attr('id');
+                    // var add_upvote = -1;
+                    // if (($(this).hasClass( "active" ))){
+                    //     $( this).removeClass( "active" );
+                    // }
+                    // else{
+                    //     $( this).addClass( "active" );
+
+                    //     add_upvote = 1;
+                    // }
+
+                    add_upvote = 1;
+                    
+                    DataToSend = {
+                        unique_id : unique_id,
+                        add_upvote : add_upvote
+                    }
+
+
+                    $.ajax({
+                        headers: { "Content-Type": "application/json"},
+                        url: '/api/addUpvote',
+                        type: 'POST',
+                        data: JSON.stringify(DataToSend),
+                        success: function(data) {
+                            $(this).parent().find('vote_count').html(toString(parseInt($(this).parent().find('vote_count').html() )+ add_upvote));
+                        }
+                    });
+
+                });
+
+                $('.voting_arrow_down').click(function(){
+                    var DataToSend = new Object();
+                    $( this).addClass( "hover" );
+                    console.log("all");
+                    unique_id = $(this).parent().attr('id');
+                    // var add_upvote = -1;
+                    // if (($(this).hasClass( "active" ))){
+                    //     $( this).removeClass( "active" );
+                    // }
+                    // else{
+                    //     $( this).addClass( "active" );
+
+                    //     add_upvote = 1;
+                    // }
+
+                    add_upvote = -1;
+                    
+                    DataToSend = {
+                        unique_id : unique_id,
+                        add_upvote : add_upvote
+                    }
+
+
+                    $.ajax({
+                        headers: { "Content-Type": "application/json"},
+                        url: '/api/addUpvote',
+                        type: 'POST',
+                        data: JSON.stringify(DataToSend),
+                        success: function(data) {
+                            $(this).parent().find('vote_count').html(toString(parseInt($(this).parent().find('vote_count').html() )+ add_upvote));
+                        }
+                    });
+
+                });
+
+            },
+            error: function(data, status){
+                return_val = '';
+            },
+        }); 
+    });
+
+    // event handler for server sent data
+    // the data is displayed in the "Received" section of the page
+    // handlers for the different forms in the page
+    // these send data to the server in a variety of ways
+
+    $('form#emit').submit(function(event) {
+        socket.emit('my event', {data: $('#emit_data').val()});
+        return false;
+    });
+    $('form#send_room').submit(function(event) {
+        socket.emit('my room event', {room: room_, data: $('#room_data').val()});
+        return false;
+    });
+    $('form#close').submit(function(event) {
+        socket.emit('close room', {room: $('#close_room').val()});
+        return false;
+    });
+    $('form#disconnect').submit(function(event) {
+        socket.emit('disconnect request');
+        return false;
+    });
+
+
+    $('.buttonSubmitQuestion').click(function(){
+        var room_ = window.location.pathname.toString();
+        room_ = room_.substr(1, room_.length);
+        
+        var new_question = $(this).parent().parent().find('.new_question_formulation').val();
+        console.log(new_question);
+        socket.emit('my room event', {room: room_, data: new_question});
+
+        $('new_question_formulation').text('');
+    });
+
+    $('#top_link').click(function(){
+        var DataToSend = new Object();
+        DataToSend = {
+            namespace : room_
+        }
+
+        $.ajax({
+            headers: { "Content-Type": "application/json"},
+            url: '/api/getRowsTop',
+            type: 'POST',
+            data: JSON.stringify(DataToSend),
+            success: function(data) {
+                obj = JSON.parse(data);
+                $('.question_area').empty();
+
+                // Do something with the result
+                if (obj.questions.length){
+                    for (i = 0; i < obj.questions.length; i++) {
+                        // TODO: Make this into a function
+                        var html_to_add  = '<div class="question">\
+                            <div class="question_tools">\
+                            <div class="voting_tools" id="' + obj.unique_ids[i] + '">' + 
+                                '<div class="voting_arrow_up"><a href="" onclick="return false;" title="Upvote +1"><i class="fa fa-chevron-up" aria-hidden="true"></i></a></div>\
+                                <div class="vote_count">' + obj.upvotes[i] + '</div>\
+                                <div class="voting_arrow_down"><a href="" onclick="return false;"  title="Downvote -1"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>\
+                            </div>\
+                            </div>'
+                        {% if room in session %}                   
+                            var second_var =   '<div class="admin_delete_centering" id="' + obj.unique_ids[i] + '">\
+                            <div class="mark_answered">\
+                            <a href="#" title="Mark as read"><i class="fa fa-check" aria-hidden="true"></i></a>\
+                            </div>\
+                            <div class="trash">\
+                            <a href="#" title="Delete permanently"><i class="fa fa-trash-o" aria-hidden="true"></i></a>\
+                            </div>\
+                            </div>'
+
+                            html_to_add = html_to_add + second_var;
+                        {% endif %}
+
+                        
+
+                        var content = '</div><div class="question_content"> ' + obj.questions[i] + '</div> </div>';
+                        $('.question_area').append(html_to_add + content); // append question_area
+                    }   
+                }
+
+                }
+
+
+           });
+
+    });
+    $('#answered_link').click(function(){
+        var DataToSend = new Object();
+        DataToSend = {
+            namespace : room_
+        }
+
+        $.ajax({
+            headers: { "Content-Type": "application/json"},
+            url: '/api/getAnsweredChron',
+            type: 'POST',
+            data: JSON.stringify(DataToSend),
+            success: function(data) {
+                obj = JSON.parse(data);
+                $('.question_area').empty();
+
+                // Do something with the result
+                if (obj.questions.length){
+                    for (i = 0; i < obj.questions.length; i++) {
+                        // TODO: Make this into a function
+                        var html_to_add  = '<div class="question">\
+                            <div class="question_tools">\
+                            <div class="voting_tools" id="' + obj.unique_ids[i] + '">' + 
+                                '<div class="voting_arrow_up"><a href="" onclick="return false;" title="Upvote +1"><i class="fa fa-chevron-up" aria-hidden="true"></i></a></div>\
+                                <div class="vote_count">' + obj.upvotes[i] + '</div>\
+                                <div class="voting_arrow_down"><a href="" onclick="return false;"  title="Downvote -1"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>\
+                            </div>\
+                            </div>'
+                        {% if room in session %}                   
+                            var second_var =   '<div class="admin_delete_centering" id="' + obj.unique_ids[i] + '">\
+                            <div class="mark_answered">\
+                            <a href="#" title="Mark as read"><i class="fa fa-check" aria-hidden="true"></i></a>\
+                            </div>\
+                            <div class="trash">\
+                            <a href="#" title="Delete permanently"><i class="fa fa-trash-o" aria-hidden="true"></i></a>\
+                            </div>\
+                            </div>'
+
+                            html_to_add = html_to_add + second_var;
+                        {% endif %}
+
+                        
+
+                        var content = '</div><div class="question_content"> ' + obj.questions[i] + '</div> </div>';
+                        $('.question_area').append(html_to_add + content); // append question_area
+                    }   
+                }
+
+                }
+
+
+           });
+
+    });
+});
+
+</script>
+</head>
+<body>
+
+<!-- TODO must store here as a parameter the question's unique ID, in order to be able to delete it... -->
+<div class="question_area"></div>
+
+<div class="bottom_panel">
+    <div class="become_admin">
+        <nav class="views">
+            <ul>
+                <li id="newest_link"><a href="" onclick="return false;">Newest</a></li>
+                <li id="top_link"><a href="" onclick="return false;">Top</a></li>
+                <li id="answered_link"><a href="" onclick="return false;">Answered</a></li>
+            </ul>
+        </nav>
+        <div class="new_question_button">
+            <i class="fa fa-question" aria-hidden="true"></i>
+        </div>
+        <div class="key_button" id="key_button">
+            <i class="fa fa-key" aria-hidden="true"></i>
+        </div>
+        <div class="admin_code">
+            <input type="text" name="admin_code_input" id="admin_code_input" placeholder="Enter admin code">
+        </div>
+    </div>
+    <div class="write_new_question">
+        <textarea class="new_question_formulation" name="new_question_formulation" maxlength="250" placeholder="Type your question, which will be posted to the question bank completely anonymously"></textarea>
+        <div class="submit_button_container">
+            <button id="buttonSubmit" class="buttonSubmitQuestion"></button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

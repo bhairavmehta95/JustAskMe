@@ -8,6 +8,7 @@ import os
 import random, string
 from flask import *
 from mysql_backend import *
+import re
 
 import socketio
 
@@ -17,29 +18,36 @@ application.wsgi_app = socketio.Middleware(sio, application.wsgi_app)
 application.config['SECRET_KEY'] = 'secret!'
 application.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
 
-# @app.route('/')
-#   def clickGo():
-#     if (request.method == 'GET'):
-#   return render_template('index.html')
-# elif (request.method == 'POST'):
-#       num_namespace = count_namespace("###get namespace from textbox###")
-#       if (!num_namespace):
-#         #Alert user that no such namespace exists, creating new one- JS/HTML in future
-#         passw = ''.join(random.choice(string.ascii_lowercase) for i in range(5))
-#         session["###get namespace from textbox###"] = passw
-#         # Add new row to namespaces table
-#       else:
-#         # Alert user that they are joining an existing page- might be a JS/HTML thing in future 
-# 	# Check if user has cookie to be admin
-#         # Else just enter as normal user
-#         pass	# until code is written     
-#       return redirect(url_for("###get namespace from textbox###"), code=307)
+@application.route('/')
+def default():
+  session['admins'] = []
+  return render_template('start_page.html')
 
 
 @application.route('/<room>')
-def index(room):
-    return render_template('index.html')
+def room(room):
+    if (request.method == 'POST'):
+        if not json.loads(request.data).get('is_in_use'):
+            new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))#gen rand letters
+            session[room] = new_passw     # New cookie
+            add_admin(new_passw,room)     # Add a new admin to the admin table
+        
+    return render_template('questions.html')    
 
+@application.route('/api/genAdminPw', methods=['POST'])
+def gen_admin_pw():
+    namespace = json.loads(request.data).get('namespace')
+    namespace = re.sub(r'[\W_]+', '', namespace)
+
+    if namespace_exists(namespace):
+        url_new = '/' + namespace
+        return redirect(url_for(url_new))
+
+    new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))
+    return json.dumps({
+        'password':new_passw,
+        'namespace':namespace
+        })
 
 @application.route('/api/addRow', methods = ['POST'])
 def api_add_row():
@@ -48,6 +56,32 @@ def api_add_row():
     question = json_data['question']
 
     add_question(question, namespace)
+    
+    return json.dumps({
+        'status_code' : 200
+    })
+
+@application.route('/api/getAnsweredChron', methods=['POST'])
+def api_answered_chron():
+    json_data = request.json
+    namespace = json_data['namespace']
+
+    get_questions_sorted_answered(namespace)
+
+    return json.dumps({
+        'status_code' : 200
+    })
+
+@application.route('/api/addAdmin', methods = ['POST'])
+def api_add_admin():
+    namespace = json.loads(request.data).get('namespace')
+    admin_pass = json.loads(request.data).get('password')
+
+    add_admin(admin_pass, namespace)
+
+    return json.dumps({
+        'status_code' : 200
+    })
 
 @application.route('/api/getRowsChron', methods = ['POST'])
 def api_get_rows_chron():
@@ -55,26 +89,26 @@ def api_get_rows_chron():
     namespace = json_data['namespace']
     
     rows = get_questions_sorted_new_unanswered(namespace)
+    unique_ids = []
     questions = []
     timestamps = []
     upvotes = []
 
-    print(rows)
-
     for val in rows:
-        if not val[5]:
-            questions.append(val[1])
-            upvotes.append(val[2])
-            timestamps.append(val[3])
-            
+        unique_ids.append(val[0])
+        questions.append(val[1])
+        upvotes.append(val[2])
+        timestamps.append(val[3])
+        
     return json.dumps({
+        'unique_ids' : unique_ids,
         'questions' : questions,
         'timestamps' : timestamps,
         'upvotes' : upvotes
         })
 
 
-@application.route('/api/getRowsTop')
+@application.route('/api/getRowsTop', methods=['POST'])
 def api_get_rows_top():
     json_data = request.json
     namespace = json_data['namespace']
@@ -83,25 +117,32 @@ def api_get_rows_top():
     questions = []
     timestamps = []
     upvotes = []
+    unique_ids = []
 
     for val in rows:
-        if not val['answered']:
-            questions.append(val['string'])
-            timestamps.append(val['posted_time'])
-            upvotes.append(val['upvotes'])
+        unique_ids.append(val[0])
+        questions.append(val[1])
+        upvotes.append(val[2])
+        timestamps.append(val[3])
 
     return json.dumps({
+        'unique_ids' : unique_ids,
         'questions' : questions,
         'timestamps' : timestamps,
         'upvotes' : upvotes
         })
 
-@application.route('/api/addUpvote')
+@application.route('/api/addUpvote', methods=['POST'])
 def api_add_upvote():
     json_data = request.json
     unique_id = json_data['unique_id']
+    add_upvote = json_data['add_upvote']
 
-    increment_upvotes_by_one(unique_id)
+    increment_upvotes_by_one(unique_id, add_upvote)
+
+    return json.dumps({
+
+        })
 
 @application.route('/api/sortChron', methods = ['POST'])
 def sort_chronological():
@@ -161,9 +202,10 @@ def close(sid, message):
 
 @sio.on('my room event', namespace='/')
 def send_room_message(sid, message):
+    unique_id = add_question(message['data'], message['room'])
     sio.emit('my response', {'data': message['data']}, room=message['room'],
              namespace='/')
-    add_question(message['data'], message['room'])
+    
 
 @sio.on('disconnect request', namespace='/')
 def disconnect_request(sid):

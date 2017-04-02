@@ -6,18 +6,22 @@ db = MySQLdb.connect(host="ahhh-db.cq2tyrgbq4kh.us-west-2.rds.amazonaws.com", po
 cursor = db.cursor()
 db.autocommit(True)
 
-def add_admin(admin_number,namespace):
-    cursor.execute("""INSERT INTO admins (admin_number,namespace)
-                       VALUE (%s,%s)""", (admin_number,namespace))
+def add_admin(admin_pass,namespace):
+    cursor.execute("""INSERT INTO admins (admin_pass,namespace)
+                       VALUE (%s,%s)""", (admin_pass,namespace,))
+
+def namespace_exists(namespace):
+    nr = cursor.execute("SELECT * FROM admins WHERE namespace='{}'".format(namespace))
+    return cursor.rowcount != 0
 
 # Get the admin passcode corresponding to the namespace
 # TODO encryption! This is not safe...
-def get_admin_number(namespace):
+def get_admin_pass(namespace):
     cursor.execute("SELECT * FROM admins WHERE namespace='"+namespace)
 
 # Remove admin passcode from namespace
-def remove_admin(admin_number):
-    cursor.execute("DELETE FROM admins WHERE admin_number="+str(admin_number))
+def remove_admin(admin_pass):
+    cursor.execute("DELETE FROM admins WHERE admin_pass="+str(admin_pass))
 
 # Remove a question from database based on its unique ID
 def remove_question(unique_id):
@@ -30,7 +34,7 @@ def add_question(string,namespace):
 
 # Sort unanswered questions by their number of upvotes
 def get_questions_sorted_top_unanswered(namespace_value):
-    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'AND answered=0 ORDER BY upvotes")
+    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'AND answered=0 ORDER BY upvotes DESC")
     return cursor.fetchall()
 
 # Sort unanswered questions with newest first
@@ -45,11 +49,11 @@ def get_questions_sorted_answered(namespace_value):
 
 
 # Increase by one the number of upvotes of question corresopnding to unique ID
-def increment_upvotes_by_one(unique_id):
+def increment_upvotes_by_one(unique_id, add_upvote):
     cursor.execute("SELECT upvotes FROM questions WHERE QuestionID="+str(unique_id))
     upvotes_value = cursor.fetchone()
-    upvotes_value = upvotes_value[0]+1
-    cursor.execute("UPDATE questions SET upvotes="+str(upvotes_value)+" WHERE QuestionID="+str(unique_id))
+    upvotes_val = add_upvote + upvotes_value[0]
+    cursor.execute("UPDATE questions SET upvotes="+str(upvotes_val)+" WHERE QuestionID="+str(unique_id))
 
 def run_updates():
     execution_str = 'DROP TABLE IF EXISTS questions'
@@ -63,7 +67,7 @@ def run_updates():
     cursor.execute(execution_str)
 
     execution_str = 'CREATE TABLE admins(ID INT NOT NULL AUTO_INCREMENT '\
-    'PRIMARY KEY, admin_number INT UNSIGNED NOT NULL, namespace VARCHAR(200) NOT NULL);'
+    'PRIMARY KEY, admin_pass VARCHAR(6) NOT NULL, namespace VARCHAR(200) NOT NULL);'
 
     cursor.execute(execution_str)
 

@@ -2,19 +2,15 @@
 <html>
 <head>
     <link rel="stylesheet" type="text/css" href="stylesheet.css">
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js" />-->
-    <!--<script src="js/ui_effects.js" />-->
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="ui_effects.js"></script>
 </head>
 <body>
 
-<div class="centered-div">
-    <input type="text" name="namespace_value" id="namespace_value" placeholder="Session name to join">
-    <div class="button-1 button-create"><div class="eff-create"></div><a href="#">Create</a></div>
-    <div class="button-1 button-join"><div class="eff-join"></div><a href="#">Join</a></div>
-</div>
-
-
-
+<form action="/search.html" class="search-wrapper cf">
+    <input type="text" placeholder="Type session name" required="">
+    <button type="submit">Go</button>
+</form>
 
 </body>
 </html>

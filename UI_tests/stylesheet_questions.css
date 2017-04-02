@@ -1,0 +1,137 @@
+* {
+    font-family: "Open Sans", Arial, Helvetica, Sans-Serif;
+}
+
+.question {
+    border-bottom: dashed 1px #d5d5d5;
+    width: 100%;
+    margin: 0px;
+    display:block;
+    overflow:auto;
+    padding-bottom : 10px;
+    margin-bottom : 10px;
+}
+
+.question_tools {
+    display: table;
+    /*background-color: #e54040;*/
+    float: left;
+}
+
+.question_tools a {
+    color: black;
+}
+
+.voting_tools .voting_all {
+    color: black;
+}
+
+.voting_tools {
+    height: 100%;
+    width: 30px;
+    float: left;
+    /*background-color: #e54040;*/
+}
+
+.voting_arrow_up, .voting_arrow_down, .vote_count {
+    width: 100%;
+    text-align: center;
+    /*background-color: yellow;*/
+}
+
+.voting_arrow_up a:hover,
+.voting_arrow_up a:active {
+    color: green;
+}
+
+.voting_arrow_down a:hover,
+.voting_arrow_down a:active {
+    color: red;
+}
+
+.admin_delete_centering:hover,
+.admin_delete_centering:active {
+    background-color: red;
+}
+
+.vote_count {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.admin_delete_centering {
+    display: table-cell;
+    vertical-align: middle;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.question_content {
+    overflow: hidden;
+    padding-left: 10px;
+}
+
+.become_admin {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+}
+
+.key_button {
+    float: right;
+    width: 20px;
+    padding: 5px;
+
+    border: solid 1px black;
+}
+
+.become_admin nav {
+    float: left;
+    padding-left: 10px;
+    position: relative;
+    z-index: 10;
+}
+
+.become_admin nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.become_admin nav li {
+    display: inline-block;
+    font-size: 12px;
+    font-family: "Oswald", sans-serif;
+    font-weight: 300;
+    line-height: 30px;
+}
+
+.become_admin nav li a {
+    color: black;
+    text-decoration: none;
+    padding-right: 10px;
+}
+
+.become_admin nav li a:hover,
+.become_admin nav li a:active {
+    color: black;
+    text-decoration: underline;
+}
+
+.admin_code {
+    float: right;
+    background-color: yellow;
+    height: 30px;
+    width: 200px;
+}
+.admin_code input {
+    border: none;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ff7d83;
+    padding-left: 10px;
+    margin-left: -10px;
+}

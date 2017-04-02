@@ -7,7 +7,7 @@ body {
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 50px;
-    background-color: #fff9ec;
+    background-color: #1f1f1f;
 }
 
 .question {
@@ -18,9 +18,9 @@ body {
     padding : 10px;
     margin : 10px;
     background-color: white;
-    -webkit-box-shadow: 0px 0px 7px -1px rgba(0,0,0,0.62);
-    -moz-box-shadow: 0px 0px 7px -1px rgba(0,0,0,0.62);
-    box-shadow: 0px 0px 7px -1px rgba(0,0,0,0.62);
+    -webkit-box-shadow: inset 0px 0px 7px -1px rgba(0,0,0,0.62);
+    -moz-box-shadow: inset 0px 0px 7px -1px rgba(0,0,0,0.62);
+    box-shadow: inset 0px 0px 7px -1px rgba(0,0,0,0.62);
 }
 
 .question_tools {
@@ -60,11 +60,6 @@ body {
     color: red;
 }
 
-.admin_delete_centering:hover,
-.admin_delete_centering:active {
-    background-color: red;
-}
-
 .vote_count {
     padding-top: 3px;
     padding-bottom: 3px;
@@ -73,8 +68,38 @@ body {
 .admin_delete_centering {
     display: table-cell;
     vertical-align: middle;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding-left: 3px;
+    padding-right: 3px;
+    width: 10px;
+}
+
+.admin_delete_centering .trash,
+.admin_delete_centering .mark_answered {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    padding: 2px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.admin_delete_centering .trash:hover,
+.admin_delete_centering .trash:active {
+    background-color: red;
+}
+
+.admin_delete_centering .trash:hover a,
+.admin_delete_centering .trash:active a {
+    color: white;
+}
+
+.admin_delete_centering .mark_answered:hover,
+.admin_delete_centering .mark_answered:active {
+    background-color: green;
+}
+
+.admin_delete_centering .mark_answered:hover a,
+.admin_delete_centering .mark_answered:active a {
+    color: white;
 }
 
 .question_content {

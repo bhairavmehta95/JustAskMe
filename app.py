@@ -19,27 +19,22 @@ app.secret_key = 'es2uD2da32h4fRV328u5eg7T41e08dqy7ufhd2du'	#  TODO: make better
 
 @app.route('/')
 def default():
-  if (request.method == 'GET'):
-    return render_template('index.html')
-  elif (request.method == 'POST'):
-    admin_pass = get_admin_pass("###get namespace from textbox###")
-    if (admin_pass==()):
-      #Alert user that no such namespace exists, creating new one- JS/HTML in future
-      new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))
-      session["###get namespace from textbox###"] = new_passw
-      add_admin(new_passw,"###get namespace from textbox###")
-      return redirect(url_for("###get namespace from textbox###"), code=307) # Enter as admin
-    else:
-      # Alert user that they are joining an existing page- might be a JS/HTML thing in future 
-      if ( session.get("###get namespace from textbox###", 'not set') == admin_pass) :
-        return redirect(url_for("###get namespace from textbox###"), code=307) # enter as admin
-      else :
-        return redirect(url_for("###get namespace from textbox###"), code=307) # enter as normal
+  session['admins'] = []
+  return render_template('start.html')
 
 
 @app.route('/<room>')
 def index(room):
-    return render_template('index.html')
+  if (request.method == 'POST'):
+    if not request.POST.get('is_in_use'):
+      pass# Set admin,
+    render_template('index.html')    
+  elif (request.method == 'GET'):
+    render_template('index.html')
+  # set as normal user
+  if ( (request.method == 'POST') and (session.get(room,'not set')==get_admin_pass(room)) ) :
+      pass # set as admin
+  return render_template('index.html')
 
 
 @app.route('/api/addRow', methods = ['POST'])

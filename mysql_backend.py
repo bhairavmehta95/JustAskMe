@@ -9,7 +9,7 @@ db_data.autocommit(True)
 db_admins.autocommit(True)
 
 def add_admin(admin_pass,namespace):
-    cursor_admins.execute("""INSERT INTO admins (admin_number,namespace)
+    cursor_admins.execute("""INSERT INTO admins (admin_pass,namespace)
                        VALUE (%s,%s)""", (admin_pass,namespace))
 
 def get_admin_pass(namespace):

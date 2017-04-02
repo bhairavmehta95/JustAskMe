@@ -13,7 +13,6 @@ import re
 import socketio
 
 sio = socketio.Server(logger=True, async_mode=async_mode)
-application = Flask(__name__)
 application.wsgi_app = socketio.Middleware(sio, application.wsgi_app)
 application.config['SECRET_KEY'] = 'secret!'
 application.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better

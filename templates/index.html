@@ -25,7 +25,7 @@
                 type: 'POST',
                 data: JSON.stringify(DataToSend),
                 success: function(data) {
-                    obj = data;
+                    obj = JSON.parse(data);
 
                     // Do something with the result
                     if (obj.questions.length){

@@ -15,6 +15,6 @@ CREATE DATABASE ahhh_admins;
 USE ahhh_admins;
 CREATE TABLE admins(
   ID INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  admin_number INT UNSIGNED NOT NULL,
+  admin_pass VARCHAR(6) NOT NULL,
   namespace VARCHAR(200) NOT NULL
 );

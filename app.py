@@ -17,22 +17,23 @@ app.config['SECRET_KEY'] = 'secret!'
 app.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
 
 @app.route('/')
-if (request.method == 'GET'):
-  return render_template('index.html')
-elif (request.method == 'POST'):
-  def clickGo():
-      num_namespace = count_namespace("###get namespace from textbox###")
-      if (!num_namespace):
-        #Alert user that no such namespace exists, creating new one- JS/HTML in future
-        passw = ''.join(random.choice(string.ascii_lowercase) for i in range(5))
-        session["###get namespace from textbox###"] = passw
-        # Add new row to namespaces table
-      else:
-        # Alert user that they are joining an existing page- might be a JS/HTML thing in future 
-	# Check if user has cookie to be admin
-        # Else just enter as normal user
-        pass	# until code is written     
-      return redirect(url_for("###get namespace from textbox###"), code=307)
+def default():
+  if (request.method == 'GET'):
+    return render_template('index.html')
+  elif (request.method == 'POST'):
+    admin_pass = get_admin_pass("###get namespace from textbox###")
+    if (admin_pass ) :##is empty):
+      #Alert user that no such namespace exists, creating new one- JS/HTML in future
+      new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))
+      session["###get namespace from textbox###"] = new_passw
+      add_admin(new_passw,"###get namespace from textbox###")
+      return redirect(url_for("###get namespace from textbox###"), code=307) # Enter as admin
+    else:
+      # Alert user that they are joining an existing page- might be a JS/HTML thing in future 
+      if ( session.get("###get namespace from textbox###", 'not set') == admin_pass) :
+        return redirect(url_for("###get namespace from textbox###"), code=307) # enter as admin
+      else :
+        return redirect(url_for("###get namespace from textbox###"), code=307) # enter as normal
 
 
 @app.route('/<room>')

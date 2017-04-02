@@ -8,15 +8,15 @@ cursor_admins = db_admins.cursor()
 db_data.autocommit(True)
 db_admins.autocommit(True)
 
-def add_admin(admin_number,namespace):
+def add_admin(admin_pass,namespace):
     cursor_admins.execute("""INSERT INTO admins (admin_number,namespace)
-                       VALUE (%s,%s)""", (admin_number,namespace))
+                       VALUE (%s,%s)""", (admin_pass,namespace))
 
-def get_admin_number(namespace):
+def get_admin_pass(namespace):
     cursor_admins.execute("SELECT * FROM admins WHERE namespace='"+namespace)
 
-def remove_admin(admin_number):
-    cursor_admins.execute("DELETE FROM admins WHERE admin_number="+str(admin_number))
+def remove_admin(admin_pass):
+    cursor_admins.execute("DELETE FROM admins WHERE admin_pass="+admin_pass)
 
 def remove_question(unique_id):
     cursor_data.execute("DELETE FROM questions WHERE QuestionID="+str(unique_id))

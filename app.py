@@ -4,19 +4,41 @@
 async_mode = None
 
 import time
+import os
+import random, string
 from flask import *
+
 import socketio
 
 sio = socketio.Server(logger=True, async_mode=async_mode)
 app = Flask(__name__)
 app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
 app.config['SECRET_KEY'] = 'secret!'
+app.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
 
-from mysql_backend import *
+@app.route('/')
+if (request.method == 'GET'):
+  return render_template('index.html')
+elif (request.method == 'POST'):
+  def clickGo():
+      num_namespace = count_namespace("###get namespace from textbox###")
+      if (!num_namespace):
+        #Alert user that no such namespace exists, creating new one- JS/HTML in future
+        passw = ''.join(random.choice(string.ascii_lowercase) for i in range(5))
+        session["###get namespace from textbox###"] = passw
+        # Add new row to namespaces table
+      else:
+        # Alert user that they are joining an existing page- might be a JS/HTML thing in future 
+	# Check if user has cookie to be admin
+        # Else just enter as normal user
+        pass	# until code is written     
+      return redirect(url_for("###get namespace from textbox###"), code=307)
+
 
 @app.route('/<room>')
 def index(room):
     return render_template('index.html')
+
 
 @app.route('/api/addRow', methods = ['POST'])
 def api_add_row():
@@ -102,6 +124,7 @@ def sort_top():
         'upvotes' = order['upvotes']
         })
 
+
 @sio.on('my event', namespace='/')
 def test_message(sid, message):
     sio.emit('my response', {'data': message['data']}, room=sid,
@@ -139,9 +162,6 @@ def close(sid, message):
 def send_room_message(sid, message):
     sio.emit('my response', {'data': message['data']}, room=message['room'],
              namespace='/')
-    add_question(message['data'], message['room'])
-    print("added message", message['data'])
-
 
 @sio.on('disconnect request', namespace='/')
 def disconnect_request(sid):

@@ -7,40 +7,41 @@ import time
 import os
 import random, string
 from flask import *
+from mysql_backend import *
 
 import socketio
 
 sio = socketio.Server(logger=True, async_mode=async_mode)
-app = Flask(__name__)
-app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
-app.config['SECRET_KEY'] = 'secret!'
-app.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
+application = Flask(__name__)
+application.wsgi_app = socketio.Middleware(sio, application.wsgi_app)
+application.config['SECRET_KEY'] = 'secret!'
+application.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
 
-@app.route('/')
-if (request.method == 'GET'):
-  return render_template('index.html')
-elif (request.method == 'POST'):
-  def clickGo():
-      num_namespace = count_namespace("###get namespace from textbox###")
-      if (!num_namespace):
-        #Alert user that no such namespace exists, creating new one- JS/HTML in future
-        passw = ''.join(random.choice(string.ascii_lowercase) for i in range(5))
-        session["###get namespace from textbox###"] = passw
-        # Add new row to namespaces table
-      else:
-        # Alert user that they are joining an existing page- might be a JS/HTML thing in future 
-	# Check if user has cookie to be admin
-        # Else just enter as normal user
-        pass	# until code is written     
-      return redirect(url_for("###get namespace from textbox###"), code=307)
+# @app.route('/')
+#   def clickGo():
+#     if (request.method == 'GET'):
+#   return render_template('index.html')
+# elif (request.method == 'POST'):
+#       num_namespace = count_namespace("###get namespace from textbox###")
+#       if (!num_namespace):
+#         #Alert user that no such namespace exists, creating new one- JS/HTML in future
+#         passw = ''.join(random.choice(string.ascii_lowercase) for i in range(5))
+#         session["###get namespace from textbox###"] = passw
+#         # Add new row to namespaces table
+#       else:
+#         # Alert user that they are joining an existing page- might be a JS/HTML thing in future 
+# 	# Check if user has cookie to be admin
+#         # Else just enter as normal user
+#         pass	# until code is written     
+#       return redirect(url_for("###get namespace from textbox###"), code=307)
 
 
-@app.route('/<room>')
+@application.route('/<room>')
 def index(room):
     return render_template('index.html')
 
 
-@app.route('/api/addRow', methods = ['POST'])
+@application.route('/api/addRow', methods = ['POST'])
 def api_add_row():
     json_data = request.json
     namespace = json_data['namespace']
@@ -48,12 +49,12 @@ def api_add_row():
 
     add_question(question, namespace)
 
-@app.route('/api/getRowsChron', methods = ['POST'])
+@application.route('/api/getRowsChron', methods = ['POST'])
 def api_get_rows_chron():
     json_data = request.json
     namespace = json_data['namespace']
     
-    rows = get_questions_sorted_new(namespace)
+    rows = get_questions_sorted_new_unanswered(namespace)
     questions = []
     timestamps = []
     upvotes = []
@@ -73,12 +74,12 @@ def api_get_rows_chron():
         })
 
 
-@app.route('/api/getRowsTop')
+@application.route('/api/getRowsTop')
 def api_get_rows_top():
     json_data = request.json
     namespace = json_data['namespace']
     
-    rows = get_questions_sorted_top(namespace)
+    rows = get_questions_sorted_top_unanswered(namespace)
     questions = []
     timestamps = []
     upvotes = []
@@ -95,33 +96,33 @@ def api_get_rows_top():
         'upvotes' : upvotes
         })
 
-@app.route('/api/addUpvote')
+@application.route('/api/addUpvote')
 def api_add_upvote():
     json_data = request.json
     unique_id = json_data['unique_id']
 
     increment_upvotes_by_one(unique_id)
 
-@app.route('/api/sortChron', methods = ['POST'])
+@application.route('/api/sortChron', methods = ['POST'])
 def sort_chronological():
     json_data = request.json
     namespace_value = request['namespace']
     order = get_questions_sorted_new_unanswered(namespace_value)
     return json.dumps({
-        'questions' = order['string']
-        'timestamps' = order['posted_time']
-        'upvotes' = order['upvotes']
+        'questions' : order['string'],
+        'timestamps' : order['posted_time'],
+        'upvotes'  :order['upvotes']
         })
 
-@app.route('/api/sortTop', methods = ['POST'])
+@application.route('/api/sortTop', methods = ['POST'])
 def sort_top():
     json_data = request.json
     namespace_value = request['namespace']
     order = get_questions_sorted_top_unanswered(namespace_value)
     return json.dumps({
-        'questions' = order['string']
-        'timestamps' = order['posted_time']
-        'upvotes' = order['upvotes']
+        'questions' : order['string'],
+        'timestamps' : order['posted_time'],
+        'upvotes' : order['upvotes']
         })
 
 
@@ -162,6 +163,7 @@ def close(sid, message):
 def send_room_message(sid, message):
     sio.emit('my response', {'data': message['data']}, room=message['room'],
              namespace='/')
+    add_question(message['data'], message['room'])
 
 @sio.on('disconnect request', namespace='/')
 def disconnect_request(sid):
@@ -182,12 +184,12 @@ def test_disconnect(sid):
 if __name__ == '__main__':
     if sio.async_mode == 'threading':
         # deploy with Werkzeug
-        app.run(threaded=True)
+        application.run(threaded=True)
     elif sio.async_mode == 'eventlet':
         # deploy with eventlet
         import eventlet
         import eventlet.wsgi
-        eventlet.wsgi.server(eventlet.listen(('', 5000)), app)
+        eventlet.wsgi.server(eventlet.listen(('', 5000)), application)
     elif sio.async_mode == 'gevent':
         # deploy with gevent
         from gevent import pywsgi
@@ -197,13 +199,13 @@ if __name__ == '__main__':
         except ImportError:
             websocket = False
         if websocket:
-            pywsgi.WSGIServer(('', 5000), app,
+            pywsgi.WSGIServer(('', 5000), application,
                               handler_class=WebSocketHandler).serve_forever()
         else:
-            pywsgi.WSGIServer(('', 5000), app).serve_forever()
+            pywsgi.WSGIServer(('', 5000), application).serve_forever()
     elif sio.async_mode == 'gevent_uwsgi':
         print('Start the application through the uwsgi server. Example:')
         print('uwsgi --http :5000 --gevent 1000 --http-websockets --master '
-              '--wsgi-file app.py --callable app')
+              '--wsgi-file apppplication.py --callable app')
     else:
         print('Unknown async_mode: ' + sio.async_mode)

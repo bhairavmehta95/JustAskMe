@@ -6,6 +6,7 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function(){
+            
 
             var room_ = window.location.pathname.toString();
 
@@ -25,30 +26,38 @@
                 type: 'POST',
                 data: JSON.stringify(DataToSend),
                 success: function(data) {
-                    var he = data.responseText;
                     obj = JSON.parse(data);
 
                     // Do something with the result
-                    for (i = 0; i < obj.questions.length; i++) {
-                        // TODO: Make this into a function
-                        $('#log').append(
-                            '<div> <br> ' + obj.questions[i] + ' ' + obj.timestamps[i] + ' ' + obj.upvotes[i] +
-                            '<button class="up" id="' + obj.questions[i] + '"_up> Up </button> <button class="down" id="' + obj.questions[i] + '"_up> Down </button> <button class ="del" id="' + obj.questions[i] + '"_del> Del </button></div>'
-                             );
+                    if (obj.questions.length){
+                        for (i = 0; i < obj.questions.length; i++) {
+                            // TODO: Make this into a function
+                            $('.log').append(
+                                '<div class = "question"> <br> ' + obj.questions[i] + ' ' + obj.timestamps[i] + ' ' + obj.upvotes[i] +
+                                '<button class="up" id="' + obj.questions[i] + '_up"> Up </button> <button class="down" id="' + obj.questions[i] + '_down"> Down </button> <button class ="del" id="' + obj.questions[i] + '_del"> Del </button></div>'
+                                 );
+                        }
                     }
+
+                    $('div.log').find('div.question').find('button.up').click(function(event){
+                        console.log('up!');
+                    });
+
+                    $('div.log').find('div.question').find('button.down').click(function(event){
+                        console.log('down!');
+                    });
+
+                    $('div.log').find('div.question').find('button.del').click(function(event){
+                        console.log('deleted');
+                    });
                 },
                 error: function(data, status){
-                    to_return = "";
-                    
-                    var obj = JSON.parse(data.responseText);
-                    for(var i = 0; i < obj.errors.length; ++i){
-                        to_return = to_return + obj.errors[i].message + '<br>';
-                    }   
-
-                    // populate errors, leave bad update_email_input
-                    $('.error').html(to_return);
+                    return_val = '';
                 },
             });
+
+
+
 
             // Connect to socket
             namespace = '/';
@@ -60,10 +69,10 @@
                 socket.emit('my event', {data: 'I\'m connected!'});
             });
             socket.on('disconnect', function() {
-                $('#log').append('<br>Disconnected');
+                $('.log').append('<br>Disconnected');
             });
             socket.on('my response', function(msg) {
-                $('#log').append('<br>Received: ' + msg.data);
+                $('.log').append('<br>Received: ' + msg.data);
             });
 
             // event handler for server sent data
@@ -88,26 +97,95 @@
                 return false;
             });
 
-            $('button.up').click(function(){
-                alert('up!');
-            });
-
-            $('button.down').click(function(){
-                alert('down!');
-            });
-
-            $('button.del').click(function(){
-                alert('deleted');
-            });
         });
 
+        $(document).ready( function() {
+            $('#sort_chron').click(function(){
+                room = window.location.pathname.toString();
 
-
-        $('#sort_chron').click(function(){
-            $.get("/api/path/to/chronological", function(data){
+                room = room.substr(1, room.length);
+            
                 
+                var DataToSend = new Object();
+                DataToSend = {
+                    namespace : room
+                }
+
+                $.ajax({
+                    headers: { "Content-Type": "application/json"},
+                    url: '/api/getRowsChron',
+                    type: 'POST',
+                    data: JSON.stringify(DataToSend),
+                    success: function(data) {
+                        obj = JSON.parse(data);
+                        
+                        $(".log").empty();
+                        console.log('emptied div, refilling with chronological data');
+
+                        // Do something with the result
+                        if (obj.questions.length){
+                            for (i = 0; i < obj.questions.length; i++) {
+                                // TODO: Make this into a function
+                                $('.log').append(
+                                    '<div class = "question"> <br> ' + obj.questions[i] + ' ' + obj.timestamps[i] + ' ' + obj.upvotes[i] +
+                                    '<button class="up" id="' + obj.questions[i] + '_up"> Up </button> <button class="down" id="' + obj.questions[i] + '_down"> Down </button> <button class ="del" id="' + obj.questions[i] + '_del"> Del </button></div>'
+                                     );
+                            }
+                        }
+                    },
+                    error: function(data, status){
+                        return_val = '';
+                    },
+                });
             });
-        });
+
+            $('#sort_top').click(function(){
+                room = window.location.pathname.toString();
+
+                room = room.substr(1, room.length);
+            
+                
+                var DataToSend = new Object();
+                DataToSend = {
+                    namespace : room
+                }
+
+                $.ajax({
+                    headers: { "Content-Type": "application/json"},
+                    url: '/api/getRowsChron',
+                    type: 'POST',
+                    data: JSON.stringify(DataToSend),
+                    success: function(data) {
+                        obj = JSON.parse(data);
+                        
+                        $(".log").empty();
+                        console.log('emptied div, refilling with top');
+
+                        // Do something with the result
+                        if (obj.questions.length){
+                            for (i = 0; i < obj.questions.length; i++) {
+                                // TODO: Make this into a function
+                                $('.log').append(
+                                    '<div class = "question"> <br> ' + obj.questions[i] + ' ' + obj.timestamps[i] + ' ' + obj.upvotes[i] +
+                                    '<button class="up" id="' + obj.questions[i] + '_up"> Up </button> <button class="down" id="' + obj.questions[i] + '_down"> Down </button> <button class ="del" id="' + obj.questions[i] + '_del"> Del </button></div>'
+                                     );
+                            }
+                        }
+                    },
+                    error: function(data, status){
+                        return_val = '';
+                    },
+                });
+            });
+
+
+         });
+        
+
+
+
+
+
 
         // $('.upvote').click(function(){
         //     $.post("/api/path/to/upvote", function(data){
@@ -131,6 +209,6 @@
     </form>
 
     <h2>Receive:</h2>
-    <div><p id="log"></p></div>
+    <div class ='log'> </div>
 </body>
 </html>

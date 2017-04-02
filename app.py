@@ -7,6 +7,7 @@ import time
 import os
 import random, string
 from flask import *
+from mysql_backend import *
 
 import socketio
 
@@ -14,7 +15,7 @@ sio = socketio.Server(logger=True, async_mode=async_mode)
 app = Flask(__name__)
 app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
 app.config['SECRET_KEY'] = 'secret!'
-app.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
+app.secret_key = 'es2uD2da32h4fRV328u5eg7T41e08dqy7ufhd2du'	#  TODO: make better
 
 @app.route('/')
 def default():
@@ -22,7 +23,7 @@ def default():
     return render_template('index.html')
   elif (request.method == 'POST'):
     admin_pass = get_admin_pass("###get namespace from textbox###")
-    if (admin_pass ) :##is empty):
+    if (admin_pass==()):
       #Alert user that no such namespace exists, creating new one- JS/HTML in future
       new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))
       session["###get namespace from textbox###"] = new_passw
@@ -109,10 +110,10 @@ def sort_chronological():
     namespace_value = request['namespace']
     order = get_questions_sorted_new_unanswered(namespace_value)
     return json.dumps({
-        'questions' = order['string']
-        'timestamps' = order['posted_time']
-        'upvotes' = order['upvotes']
-        })
+      'questions' : order['string'],
+      'timestamps' : order['posted_time'],
+      'upvotes' : order['upvotes']
+      })
 
 @app.route('/api/sortTop', methods = ['POST'])
 def sort_top():
@@ -120,10 +121,10 @@ def sort_top():
     namespace_value = request['namespace']
     order = get_questions_sorted_top_unanswered(namespace_value)
     return json.dumps({
-        'questions' = order['string']
-        'timestamps' = order['posted_time']
-        'upvotes' = order['upvotes']
-        })
+      'questions' : order['string'],
+      'timestamps' : order['posted_time'],
+      'upvotes' : order['upvotes']
+      })
 
 
 @sio.on('my event', namespace='/')

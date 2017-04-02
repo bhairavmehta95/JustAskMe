@@ -4,7 +4,9 @@
 async_mode = None
 
 import time
-from flask import Flask, render_template
+import os
+import random, string
+from flask import Flask, render_template, redirect, url_for
 import socketio
 
 sio = socketio.Server(logger=True, async_mode=async_mode)
@@ -12,6 +14,23 @@ app = Flask(__name__)
 app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
 app.config['SECRET_KEY'] = 'secret!'
 
+@app.route('/')
+if (request.method == 'GET'):
+  return render_template('index.html')
+elif (request.method == 'POST'):
+  def clickGo():
+      num_namespace = count_namespace("###get namespace from textbox###")
+      if (!num_namespace):
+        #Alert user that no such namespace exists, creating new one- JS/HTML in future
+        passw = ''.join(random.choice(string.ascii_lowercase) for i in range(5))
+        session["###get namespace from textbox###"] = passw
+        # Add new row to namespaces table
+      else:
+        # Alert user that they are joining an existing page- might be a JS/HTML thing in future 
+	# Check if user has cookie to be admin
+        # Else just enter as normal user
+        pass	# until code is written     
+      return redirect(url_for("###get namespace from textbox###"), code=307)
 
 @app.route('/<room>')
 def index(room):
@@ -74,7 +93,7 @@ def test_disconnect(sid):
 
 
 if __name__ == '__main__':
-    app.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	# make better
+    app.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
     if sio.async_mode == 'threading':
         # deploy with Werkzeug
         app.run(threaded=True)

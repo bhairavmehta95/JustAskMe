@@ -25,6 +25,10 @@ def get_rows_sorted_new(namespace_value):
     cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"' ORDER BY posted_time")
     return cursor.fetchall()
 
+def count_namespace(namespace_value):
+    cursor_data.execute("SELECT COUNT(*) FROM questions WHERE namespace='"+namespace_value+"'")
+    return cursor_data.fetchall()
+
 def increment_upvotes_by_one(unique_id):
     cursor.execute("SELECT upvotes FROM questions WHERE QuestionID="+str(unique_id))
     upvotes_value = cursor.fetchone()

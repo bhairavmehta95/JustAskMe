@@ -50,16 +50,6 @@ body {
     /*background-color: yellow;*/
 }
 
-.voting_arrow_up a:hover,
-.voting_arrow_up a:active {
-    color: green;
-}
-
-.voting_arrow_down a:hover,
-.voting_arrow_down a:active {
-    color: red;
-}
-
 .vote_count {
     padding-top: 3px;
     padding-bottom: 3px;

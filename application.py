@@ -12,6 +12,7 @@ import re
 
 import socketio
 
+application = Flask(__name__)
 sio = socketio.Server(logger=True, async_mode=async_mode)
 application.wsgi_app = socketio.Middleware(sio, application.wsgi_app)
 application.config['SECRET_KEY'] = 'secret!'
@@ -31,7 +32,7 @@ def room(room):
             new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))#gen rand letters
             session[room] = new_passw     # New cookie
             add_admin(new_passw,room)     # Add a new admin to the admin table
-        
+
     return render_template('questions.html')    
 
 @application.route('/api/genAdminPw', methods=['POST'])
@@ -224,6 +225,7 @@ def test_disconnect(sid):
 
 
 if __name__ == '__main__':
+
     if sio.async_mode == 'threading':
         # deploy with Werkzeug
         application.run(threaded=True)

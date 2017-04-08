@@ -252,7 +252,7 @@ $(document).ready(function() {
             success: function(data) {
                 if (JSON.parse(data)['verified'] == true) {
                     $(this).addClass("activate");
-                    window.location.reload();
+                    window.location.href = window.location.href;
                 }
                 else{
                     console.log("wrong pw");

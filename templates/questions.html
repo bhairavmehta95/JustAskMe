@@ -52,10 +52,11 @@
 </html>
 
 <script>
-    var room = window.location.pathname.toString().substr(1);
-    {% if room in session %}
-    currentUser = "admin";
+    {% if session['room'] in session %}
+        if ('{{ session['room'] }}' == window.location.pathname.toString().substr(1)){
+           var currentUser = "admin";
+        }
     {% else %}
-    currentUser = null;
+        var currentUser = null;
     {% endif %}
 </script>

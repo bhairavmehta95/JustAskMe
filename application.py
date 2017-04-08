@@ -32,7 +32,6 @@ def room(room):
             session[room] = new_passw     # New cookie
             session['room'] = room
             add_admin(new_passw, room)     # Add a new admin to the admin table
-    print(session[room])
     return render_template('questions.html')    
 
 @application.route('/api/genAdminPw', methods=['POST'])
@@ -80,7 +79,7 @@ def api_verify_admin():
     password = json.loads(request.data).get('password')
     namespace = re.sub(r'\W+', '', namespace)
     true_pw = get_admin_pass(namespace)
-    print(true_pw)
+
     if password == true_pw:
         session[namespace] = password
         session['room'] = namespace

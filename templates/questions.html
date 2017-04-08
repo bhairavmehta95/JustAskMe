@@ -53,7 +53,7 @@
 
 <script>
     {% if session['room'] in session %}
-        if ('{{ session['room'] }}' == window.location.pathname.toString().substr(1)){
+        if ({{ session['room'] }} == window.location.pathname.toString().substr(1)){
            var currentUser = "admin";
         }
     {% else %}

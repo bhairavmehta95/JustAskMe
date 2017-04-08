@@ -14,10 +14,10 @@ def namespace_exists(namespace):
     nr = cursor.execute("SELECT * FROM admins WHERE namespace='{}'".format(namespace))
     return cursor.rowcount != 0
 
-# Get the admin passcode corresponding to the namespace
-# TODO encryption! This is not safe...
 def get_admin_pass(namespace):
-    cursor.execute("SELECT * FROM admins WHERE namespace='"+namespace)
+    cursor.execute("SELECT admin_pass FROM admins WHERE namespace='{}'".format(namespace))
+    password = cursor.fetchone()
+    return password[0]
 
 # Remove admin passcode from namespace
 def remove_admin(admin_pass):

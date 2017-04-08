@@ -2,354 +2,16 @@
 <html>
 <head>
     <meta charset="UTF-8">
-
     <!-- Load things related to jQuery and  -->
     <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
     <link rel='stylesheet prefetch' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.5/socket.io.min.js"></script>
     <link rel='stylesheet prefetch' href='http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css'>
     <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
-
     <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet_questions.css') }}">
-    <!-- <script type = "text/javascript" src="{{ url_for('static', filename='js/ui_effects_questions.js') }}"></script> -->
-
-<script type="text/javascript">
-    function getCookie(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for(var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return "";
-    }
-
-    function addUpvote(unique_id, upvote){
-        var DataToSend = {
-            unique_id : unique_id,
-            add_upvote : upvote
-        }
-
-        $.ajax({
-            headers: { "Content-Type": "application/json"},
-            url: '/api/addUpvote',
-            type: 'POST',
-            data: JSON.stringify(DataToSend),
-            success: function(data) {
-                $(this).parent().find('vote_count').html(toString(parseInt($(this).parent().find('vote_count').html() )+ upvote));
-            }
-        });
-    }
-
-    function reupdateArrows(){
-        $('.voting_arrow_down').hover(function(){
-            $(this).find("a").css("color","red");
-        }, function(){
-            if ($(this).find("a").attr("pressed") === undefined) {
-                $(this).find("a").css("color", "black");
-            }
-        });
-
-        $('.voting_arrow_down').click(function(e){
-            console.log($(this).parent().find(".voting_arrow_up").find("a").attr("pressed"));
-            e.preventDefault();
-            unique_id = $(this).parent().attr('id');
-            var upvote_amt = 0;
-
-            // Both up and down unactivated, send -1
-            if ($(this).find("a").attr("pressed") === undefined &&
-                $(this).parent().find(".voting_arrow_up").find("a").attr("pressed") === undefined){
-
-                $(this).find("a").css("color", "red");
-                $(this).find("a").attr("pressed", "true");
-
-                addUpvote(unique_id, -1);
-                upvote_amt = -1;
-            }
-
-            // Only down arrow activated, cancel out vote by sending +1
-            else if ($(this).find("a").attr("pressed") !== undefined &&
-                $(this).parent().find(".voting_arrow_up").find("a").attr("pressed") === undefined){
-
-                $(this).find("a").css("color", "");
-                $(this).find("a").removeAttr("pressed");
-
-                addUpvote(unique_id, 1);
-                upvote_amt = 1;
-
-            }
-
-            // Up arrow is activated, cancel out by sending -2
-            else if ($(this).find("a").attr("pressed") === undefined &&
-                $(this).parent().find(".voting_arrow_up").find("a").attr("pressed") !== undefined){
-
-                // add color to down
-                $(this).find("a").css("color", "red");
-                $(this).find("a").attr("pressed", "true");
-
-                // remove color from up
-                $(this).parent().find(".voting_arrow_up").find("a").css("color","");
-                $(this).parent().find(".voting_arrow_up").find("a").removeAttr("pressed");
-
-
-                addUpvote(unique_id, -2);
-                upvote_amt = -2;
-            }
-
-            // update number
-            var vote_count = parseInt($(this).parent().find(".vote_count").html());
-            vote_count += upvote_amt;
-            $(this).parent().find(".vote_count").html(vote_count.toString());
-
-        });
-
-        $('.voting_arrow_up').hover(function(){
-            $(this).find("a").css("color","green");
-        }, function(){
-            if ($(this).find("a").attr("pressed") === undefined) {
-                $(this).find("a").css("color", "black");
-            }
-        });
-
-        $('.voting_arrow_up').click(function(e){
-            e.preventDefault();
-            unique_id = $(this).parent().attr('id');
-
-            var upvote_amt = 0;
-
-            // Both up and down unactivated, send 1
-            if ($(this).find("a").attr("pressed") === undefined &&
-                $(this).parent().find(".voting_arrow_down").find("a").attr("pressed") === undefined){
-
-                $(this).find("a").css("color", "green");
-                $(this).find("a").attr("pressed", "true");
-
-                addUpvote(unique_id, 1);
-                upvote_amt = 1;
-
-            }
-
-            // Only up arrow activated, cancel out vote by sending -1
-            else if ($(this).find("a").attr("pressed") !== undefined &&
-                $(this).parent().find(".voting_arrow_down").find("a").attr("pressed") === undefined){
-
-                $(this).find("a").css("color", "");
-                $(this).find("a").removeAttr("pressed");
-
-                addUpvote(unique_id, -1);
-                upvote_amt = -1;
-            }
-
-            // Down arrow is activated, cancel out by sending +2
-            else if ($(this).find("a").attr("pressed") === undefined &&
-                $(this).parent().find(".voting_arrow_down").find("a").attr("pressed") !== undefined) {
-
-                // add color to up
-                $(this).find("a").css("color", "green");
-                $(this).find("a").attr("pressed", "true");
-
-                // remove color from down
-                $(this).parent().find(".voting_arrow_down").find("a").css("color", "");
-                $(this).parent().find(".voting_arrow_down").find("a").removeAttr("pressed");
-
-
-                addUpvote(unique_id, 2);
-                upvote_amt = 2;
-            }
-
-            // update number
-            var vote_count = parseInt($(this).parent().find(".vote_count").html());
-            vote_count += upvote_amt;
-            $(this).parent().find(".vote_count").html(vote_count.toString());
-        });
-    }
-
-    function callUpdate(apiLocation) {
-        var room_ = window.location.pathname.toString();
-
-        room_ = room_.substr(1, room_.length);
-
-        var DataToSend = new Object();
-        DataToSend = {
-            namespace: room_
-        };
-
-        $.ajax({
-            headers: {"Content-Type": "application/json"},
-            url: apiLocation,
-            type: 'POST',
-            data: JSON.stringify(DataToSend),
-            success: function (data) {
-                obj = JSON.parse(data);
-                $('.question_area').empty();
-
-                // Do something with the result
-                if (obj.questions.length) {
-                    for (i = 0; i < obj.questions.length; i++) {
-                        // TODO: Make this into a function
-                        var html_to_add = '<div class="question">\
-                        <div class="question_tools">\
-                        <div class="voting_tools" id="' + obj.unique_ids[i] + '">' +
-                            '<div class="voting_arrow_up"><a href="" onclick="return false;" title="Upvote +1"><i class="fa fa-chevron-up" aria-hidden="true"></i></a></div>\
-                            <div class="vote_count">' + obj.upvotes[i] + '</div>\
-                            <div class="voting_arrow_down"><a href="" onclick="return false;"  title="Downvote -1"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>\
-                        </div>\
-                        </div>'
-                        {% if room in session %}
-                            var second_var = '<div class="admin_delete_centering" id="' + obj.unique_ids[i] + '">\
-                        <div class="mark_answered">\
-                        <a href="#" title="Mark as read"><i class="fa fa-check" aria-hidden="true"></i></a>\
-                        </div>\
-                        <div class="trash">\
-                        <a href="#" title="Delete permanently"><i class="fa fa-trash-o" aria-hidden="true"></i></a>\
-                        </div>\
-                        </div>'
-
-                            html_to_add = html_to_add + second_var;
-                        {% endif %}
-
-
-
-                        var content = '</div><div class="question_content"> ' + obj.questions[i] + '</div> </div>';
-                        $('.question_area').append(html_to_add + content); // append question_area
-                    }
-
-                    reupdateArrows();
-                }
-
-            }
-        });
-    }
-</script>
-
-
-<script>
-
-$(document).ready(function() {
-    $(".key_button").click(function(){
-        if ($(this).hasClass("activate")) { // TODO do not disactivate if user is an admin! This is "feedback" that user is admin
-            $(this).removeClass("activate");
-            $('.admin_code').animate({width: 'toggle'}, {duration: 200});
-        } else {
-            $(this).addClass("activate");
-            $('.admin_code').animate({width: 'toggle'}, {duration: 200});
-        }
-    });
-
-    $(".new_question_button").click(function(){
-        if ($(this).hasClass("activate")) {
-            $(this).removeClass("activate");
-            $('.write_new_question').animate({height: 'toggle'}, {duration: 200});
-        } else {
-            $(this).addClass("activate");
-            $('.write_new_question').animate({height: 'toggle'}, {duration: 200});
-        }
-    });
-
-    $('form#emit').submit(function(event) {
-        //socket.emit('my event', {data: $('#emit_data').val()});
-        return false;
-    });
-
-    $('form#send_room').submit(function(event) {
-        //socket.emit('my room event', {room: room_, data: $('#room_data').val()});
-        return false;
-    });
-
-    $('form#close').submit(function(event) {
-        //socket.emit('close room', {room: $('#close_room').val()});
-        return false;
-    });
-
-    $('form#disconnect').submit(function(event) {
-        socket.emit('disconnect request');
-        return false;
-    });
-
-    $('#top_link').click(function(){
-        document.cookie="ordering=top";
-        callUpdate('api/getRowsTop');
-    });
-
-    $('#answered_link').click(function(){
-        callUpdate();
-    });
-
-    $('#newest_link').click(function(){
-        document.cookie="ordering=chron";
-        callUpdate('api/getRowsChron');
-    });
-});
-
-$(function() {
-    $( "#button" ).click(function() {
-        $( "#button" ).addClass( "onclic", 250, validate);
-    });
-
-    function validate() {
-        setTimeout(function() {
-            $( "#button" ).removeClass( "onclic" );
-            $( "#button" ).addClass( "validate", 450, callback );
-        }, 2250 );
-    }
-    function callback() {
-        setTimeout(function() {
-            $( "#button" ).removeClass( "validate" );
-        }, 1250 );
-    }
-});
-
-$(document).ready( function() {
-
-    namespace = '/';
-
-    var room_ = window.location.pathname.toString();
-
-    room_ = room_.substr(1, room_.length);
-    var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
-
-    socket.emit('join', {room: room_});
-
-
-    socket.on('my response', function(msg) {
-        if (getCookie("ordering")==="top") {
-            callUpdate('/api/getRowsTop');
-        }
-        else{
-            callUpdate('/api/getRowsChron');
-        }
-    });
-
-    $('.buttonSubmitQuestion').click(function(){
-        var room_ = window.location.pathname.toString();
-        room_ = room_.substr(1, room_.length);
-
-        var new_question = $(this).parent().parent().find('.new_question_formulation').val();
-        console.log(new_question);
-        socket.emit('my room event', {room: room_, data: new_question});
-
-        $('new_question_formulation').text('');
-    });
-
-
-});
-
-// event handler for server sent data
-// the data is displayed in the "Received" section of the page
-// handlers for the different forms in the page
-// these send data to the server in a variety of ways
-
-
-
-
-</script>
+    <script type = "text/javascript" src="{{ url_for('static', filename='js/ui_effects_questions.js') }}"></script>
 </head>
 <body>
 
@@ -371,6 +33,9 @@ $(document).ready( function() {
         <div class="key_button" id="key_button">
             <i class="fa fa-key" aria-hidden="true"></i>
         </div>
+        <div class="submit_admin_button" id="submit_admin_button">
+            <i class="fa fa-check" aria-hidden="true"></i>
+        </div>
         <div class="admin_code">
             <input type="text" name="admin_code_input" id="admin_code_input" placeholder="Enter admin code">
         </div>
@@ -385,3 +50,12 @@ $(document).ready( function() {
 
 </body>
 </html>
+
+<script>
+    var room = window.location.pathname.toString().substr(1);
+    {% if room in session %}
+    currentUser = "admin";
+    {% else %}
+    currentUser = null;
+    {% endif %}
+</script>

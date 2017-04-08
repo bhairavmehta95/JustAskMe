@@ -21,7 +21,6 @@ application.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
 @application.route('/index')
 @application.route('/')
 def default():
-  session['admins'] = []
   return render_template('start_page.html')
 
 
@@ -31,7 +30,7 @@ def room(room):
         if not json.loads(request.data).get('is_in_use'):
             new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))#gen rand letters
             session[room] = new_passw     # New cookie
-            add_admin(new_passw,room)     # Add a new admin to the admin table
+            add_admin(new_passw, room)     # Add a new admin to the admin table
 
     return render_template('questions.html')    
 
@@ -72,6 +71,25 @@ def api_answered_chron():
     return json.dumps({
         'status_code' : 200
     })
+
+
+@application.route('/api/verifyAdmin', methods=['POST'])
+def api_verify_admin():
+    namespace = json.loads(request.data).get('room')
+    password = json.loads(request.data).get('password')
+    namespace = re.sub(r'\W+', '', namespace)
+    true_pw = get_admin_pass(namespace)
+    print(true_pw)
+    if password == true_pw:
+        session[namespace] = password
+        return json.dumps({
+            'verified' : True
+        })
+    else:
+        return json.dumps({
+            'verified' : False
+        })
+
 
 @application.route('/api/addAdmin', methods = ['POST'])
 def api_add_admin():

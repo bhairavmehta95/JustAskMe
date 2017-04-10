@@ -41,7 +41,7 @@ def gen_admin_pw():
 
     if namespace_exists(namespace):
         url_new = '/' + namespace
-        return redirect(url_for(url_new))
+        return redirect(url_new)
 
     new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))
     return json.dumps({

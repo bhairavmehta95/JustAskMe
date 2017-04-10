@@ -276,10 +276,11 @@ $(document).ready(function() {
         return false;
     });
 
-    $('form#disconnect').submit(function(event) {
-        socket.emit('disconnect request');
-        return false;
-    });
+    // $('form#disconnect').submit(function(event) {
+    //     socket.emit('disconnect request');
+    //     console.log("disconnecting");
+    //     return false;
+    // });
 
     $('#top_link').click(function(){
         document.cookie="ordering=top";

@@ -321,7 +321,7 @@ $(document).ready( function() {
     var room_ = window.location.pathname.toString();
 
     room_ = room_.substr(1, room_.length);
-    var socket = io.connect('http://' + document.domain + ':' + location.port + namespace);
+    var socket = io.connect('https://' + document.domain + ':' + location.port + namespace);
 
     socket.emit('join', {room: room_});
 

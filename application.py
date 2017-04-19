@@ -35,6 +35,8 @@ def room(room):
             session[room] = new_passw     # New cookie
             session['room'] = room
             add_admin(new_passw, room)     # Add a new admin to the admin table
+        else:
+            redirect(url_for(str(room)))
     return render_template('questions.html')    
 
 @application.route('/api/genAdminPw', methods=['POST'])

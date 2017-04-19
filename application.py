@@ -193,7 +193,7 @@ def sort_top():
 
 @sio.on('join', namespace='/')
 def join(message):
-    join_room(message['room'], namespace='/')
+    join_room(message['room'])
     emit('my response', {'data': 'Entered room: ' + message['room']},
              room=message['room'], namespace='/')
 

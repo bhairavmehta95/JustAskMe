@@ -320,12 +320,14 @@ $(document).ready( function() {
     namespace = '/';
 
     var room_ = window.location.pathname.toString();
-
     room_ = room_.substr(1, room_.length);
-    var socket = io.connect('https://' + document.domain + ':' + location.port + namespace);
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
 
     socket.emit('join', {room: room_});
 
+    socket.on('connect', function() {
+        socket.emit('my event', {data: 'I\'m connected!'});
+    });
 
     socket.on('my response', function(msg) {
         if (getCookie("ordering")==="top") {

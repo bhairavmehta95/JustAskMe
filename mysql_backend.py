@@ -39,12 +39,12 @@ def get_questions_sorted_top_unanswered(namespace_value):
 
 # Sort unanswered questions with newest first
 def get_questions_sorted_new_unanswered(namespace_value):
-    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'AND answered=0 ORDER BY posted_time")
+    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'AND answered=0 ORDER BY posted_time DESC")
     return cursor.fetchall()
 
 # Get the answered questions, ordered chronologically
 def get_questions_sorted_answered(namespace_value):
-    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"' AND answered=1 ORDER BY posted_time")
+    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"' AND answered=1 ORDER BY posted_time DESC")
     return cursor.fetchall()
 
 

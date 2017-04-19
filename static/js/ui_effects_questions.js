@@ -346,7 +346,9 @@ $(document).ready( function() {
         console.log(new_question);
         socket.emit('my room event', {room: room_, data: new_question});
 
-        $('new_question_formulation').text('');
+        $('.new_question_formulation').text('');
+        $('.new_question_button').removeClass("activate");
+        $('.write_new_question').animate({height: 'toggle'}, {duration: 200});
     });
 
 

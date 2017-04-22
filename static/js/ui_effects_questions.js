@@ -151,6 +151,60 @@ function reupdateArrows(){
         vote_count += upvote_amt;
         $(this).parent().find(".vote_count").html(vote_count.toString());
     });
+
+    $('.mark_answered').click(function(e){
+        e.preventDefault();
+        unique_id = $(this).parent().attr('id');
+
+        var DataToSend = new Object();
+        DataToSend = {
+            unique_id: unique_id
+        };
+
+        $.ajax({
+            headers: {"Content-Type": "application/json"},
+            url: 'api/answerQuestion',
+            type: 'POST',
+            data: JSON.stringify(DataToSend),
+            success: function (data) {},
+            error: function(){
+                console.log("oops");
+            },
+        });
+
+        var apiLocation = "api/getRowsChron";
+        if (getCookie("ordering") == "top"){
+            apiLocation = "api/getRowsTop";
+        }
+        callUpdate(apiLocation);
+    });
+
+    $('.trash').click(function(e){
+        e.preventDefault();
+        unique_id = $(this).parent().attr('id');
+
+        var DataToSend = new Object();
+        DataToSend = {
+            unique_id: unique_id
+        };
+
+        $.ajax({
+            headers: {"Content-Type": "application/json"},
+            url: 'api/deleteQuestion',
+            type: 'POST',
+            data: JSON.stringify(DataToSend),
+            success: function (data) {},
+            error: function(){
+                console.log("oops");
+            },
+        });
+
+        var apiLocation = "api/getRowsChron";
+        if (getCookie("ordering") == "top"){
+            apiLocation = "api/getRowsTop";
+        }
+        callUpdate(apiLocation);
+    });
 }
 
 function callUpdate(apiLocation) {
@@ -187,21 +241,22 @@ function callUpdate(apiLocation) {
 
                         var second_var = '<div class="admin_delete_centering" id="' + obj.unique_ids[i] + '">\
                     <div class="mark_answered">\
-                    <a href="#" title="Mark as read"><i class="fa fa-check" aria-hidden="true"></i></a>\
+                    <a href="" onclick="return false;" title="Mark as read"><i class="fa fa-check" aria-hidden="true"></i></a>\
                     </div>\
                     <div class="trash">\
-                    <a href="#" title="Delete permanently"><i class="fa fa-trash-o" aria-hidden="true"></i></a>\
+                    <a href="" onclick="return false;" title="Delete permanently"><i class="fa fa-trash-o" aria-hidden="true"></i></a>\
                     </div>\
                     </div>'
 
-                    if(currentUser != null){
+                    if(currentUser != null && getCookie("ordering").toString() != "answered"){
                         html_to_add = html_to_add + second_var;
                     }
 
 
 
-                    var content = '</div><div class="question_content"> ' + obj.questions[i] + '</div> </div>';
+                    var content = '</div><div class="question_content"> ' + obj.questions[i] + '</div> <div class="timestamp"> ' + obj.timestamps[i] + '</div> </div> </div> </div>';
                     $('.question_area').append(html_to_add + content); // append question_area
+
                 }
 
                 reupdateArrows();
@@ -261,34 +316,14 @@ $(document).ready(function() {
         });
     });
 
-    $('form#emit').submit(function(event) {
-        //socket.emit('my event', {data: $('#emit_data').val()});
-        return false;
-    });
-
-    $('form#send_room').submit(function(event) {
-        //socket.emit('my room event', {room: room_, data: $('#room_data').val()});
-        return false;
-    });
-
-    $('form#close').submit(function(event) {
-        //socket.emit('close room', {room: $('#close_room').val()});
-        return false;
-    });
-
-    // $('form#disconnect').submit(function(event) {
-    //     socket.emit('disconnect request');
-    //     console.log("disconnecting");
-    //     return false;
-    // });
-
     $('#top_link').click(function(){
         document.cookie="ordering=top";
         callUpdate('api/getRowsTop');
     });
 
     $('#answered_link').click(function(){
-        callUpdate();
+        document.cookie="ordering=answered";
+        callUpdate('api/getAnswered');
     });
 
     $('#newest_link').click(function(){
@@ -330,7 +365,7 @@ $(document).ready( function() {
     });
 
     socket.on('my response', function(msg) {
-        if (getCookie("ordering")==="top") {
+        if (getCookie("ordering") =="top") {
             callUpdate('/api/getRowsTop');
         }
         else{
@@ -349,6 +384,8 @@ $(document).ready( function() {
         $('.new_question_formulation').text('');
         $('.new_question_button').removeClass("activate");
         $('.write_new_question').animate({height: 'toggle'}, {duration: 200});
+
+        $(this).parent().parent().find('.new_question_formulation').val("");
     });
 
 

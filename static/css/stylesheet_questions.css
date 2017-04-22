@@ -98,6 +98,13 @@ body {
     padding-bottom: 5px;
 }
 
+.timestamp {
+    overflow: hidden;
+    padding-left: 10px;
+    padding-top: 20px;
+    font-size: 12px;
+}
+
 .bottom_panel {
     position: fixed;
     bottom: 0;

@@ -47,6 +47,11 @@ def get_questions_sorted_answered(namespace_value):
     cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"' AND answered=1 ORDER BY posted_time DESC")
     return cursor.fetchall()
 
+def answer_question(unique_id):
+    cursor.execute("UPDATE questions SET answered=1 WHERE QuestionID="+str(unique_id))
+
+def delete_question(unique_id):
+    cursor.execute("DELETE FROM questions WHERE QuestionID=" + str(unique_id))
 
 # Increase by one the number of upvotes of question corresopnding to unique ID
 def increment_upvotes_by_one(unique_id, add_upvote):

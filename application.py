@@ -3,23 +3,16 @@
 # installed
 async_mode = None
 
-import time
-import os
 import random, string
-from flask import *
+
 from mysql_backend import *
 import re
-
-import socketio
-
 from flask_socketio import SocketIO, join_room, send, emit
 
 application = Flask(__name__)
-# sio = socketio.Server(logger=True, async_mode=async_mode)
-# application.wsgi_app = socketio.Middleware(sio, application.wsgi_app)
-application.config['SECRET_KEY'] = 'secret!'
 sio = SocketIO(application)
-# application.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'	#  TODO: make better
+application.config['SECRET_KEY'] = 'es2uD2da32h4fRV328u5eg7Tufhd2du'
+application.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'
 
 @application.route('/index')
 @application.route('/')
@@ -36,7 +29,7 @@ def room(room):
             session['room'] = room
             add_admin(new_passw, room)     # Add a new admin to the admin table
         else:
-            redirect(url_for(str(room)))
+            return redirect(room)
     return render_template('questions.html')    
 
 @application.route('/api/genAdminPw', methods=['POST'])
@@ -46,12 +39,16 @@ def gen_admin_pw():
 
     if namespace_exists(namespace):
         url_new = '/' + namespace
-        return redirect(url_new)
+        return json.dumps({
+            'exists' : True,
+            'namespace': namespace
+        })
 
     new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))
     return json.dumps({
         'password':new_passw,
-        'namespace':namespace
+        'namespace':namespace,
+        'exists' : False
         })
 
 @application.route('/api/addRow', methods = ['POST'])
@@ -84,10 +81,11 @@ def api_verify_admin():
     password = json.loads(request.data).get('password')
     namespace = re.sub(r'\W+', '', namespace)
     true_pw = get_admin_pass(namespace)
+    print(true_pw)
 
     if password == true_pw:
         session[namespace] = password
-        session['room'] = namespace
+        session['room'] = str(namespace)
 
         return json.dumps({
             'verified' : True
@@ -108,6 +106,31 @@ def api_add_admin():
     return json.dumps({
         'status_code' : 200
     })
+
+@application.route('/api/getAnswered', methods = ['POST'])
+def api_get_answered_chron():
+    json_data = request.json
+    namespace = json_data['namespace']
+
+    rows = get_questions_sorted_answered(namespace)
+    unique_ids = []
+    questions = []
+    timestamps = []
+    upvotes = []
+
+    for val in rows:
+        unique_ids.append(val[0])
+        questions.append(val[1])
+        upvotes.append(val[2])
+        timestamps.append(val[3])
+
+    return json.dumps({
+        'unique_ids': unique_ids,
+        'questions': questions,
+        'timestamps': timestamps,
+        'upvotes': upvotes
+    })
+
 
 @application.route('/api/getRowsChron', methods = ['POST'])
 def api_get_rows_chron():
@@ -170,6 +193,28 @@ def api_add_upvote():
 
         })
 
+@application.route('/api/answerQuestion', methods=['POST'])
+def api_answer_question():
+    json_data = request.json
+    unique_id = json_data['unique_id']
+
+    answer_question(unique_id)
+
+    return json.dumps({
+
+        })
+
+@application.route('/api/deleteQuestion', methods=['POST'])
+def api_delete_question():
+    json_data = request.json
+    unique_id = json_data['unique_id']
+
+    delete_question(unique_id)
+
+    return json.dumps({
+
+        })
+
 @application.route('/api/sortChron', methods = ['POST'])
 def sort_chronological():
     json_data = request.json
@@ -206,37 +251,9 @@ def send_room_message(message):
     emit('my response', {'data': message['data']}, room=message['room'],
              namespace='/')
 
-
 @sio.on('connect', namespace='/')
 def test_connect():
     emit('my response', {'data': 'Connected', 'count': 0}, namespace='/')
 
 if __name__ == '__main__':
     sio.run(application)
-    # if sio.async_mode == 'threading':
-    #     # deploy with Werkzeug
-    #     application.run(threaded=True)
-    # elif sio.async_mode == 'eventlet':
-    #     # deploy with eventlet
-    #     import eventlet
-    #     import eventlet.wsgi
-    #     eventlet.wsgi.server(eventlet.listen(('', 5000)), application)
-    # elif sio.async_mode == 'gevent':
-    #     # deploy with gevent
-    #     from gevent import pywsgi
-    #     try:
-    #         from geventwebsocket.handler import WebSocketHandler
-    #         websocket = True
-    #     except ImportError:
-    #         websocket = False
-    #     if websocket:
-    #         pywsgi.WSGIServer(('', 5000), application,
-    #                           handler_class=WebSocketHandler).serve_forever()
-    #     else:
-    #         pywsgi.WSGIServer(('', 5000), application).serve_forever()
-    # elif sio.async_mode == 'gevent_uwsgi':
-    #     print('Start the application through the uwsgi server. Example:')
-    #     print('uwsgi --http :5000 --gevent 1000 --http-websockets --master '
-    #           '--wsgi-file application.py --callable app')
-    # else:
-    #     print('Unknown async_mode: ' + sio.async_mode)

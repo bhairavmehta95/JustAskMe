@@ -30,6 +30,29 @@ function addUpvote(unique_id, upvote){
     });
 }
 
+function restoreCurrentVotes(unique_id, isUpvoted){
+    fullPath = ".voting_tools#"+ unique_id.toString();
+    var upvote_amt = 0;
+
+    if (isUpvoted){
+        $(fullPath).find(".voting_arrow_up").find("a").attr("pressed", "true");
+        $(fullPath).find(".voting_arrow_up").find("a").css("color","green");
+        upvote_amt = 1;
+    }
+
+    else{
+        $(fullPath).find(".voting_arrow_down").find("a").attr("pressed", "true");
+        $(fullPath).find(".voting_arrow_down").find("a").css("color","red");
+        upvote_amt = -1;
+    }
+
+    // update number
+    var vote_count = parseInt($(fullPath).find(".vote_count").html());
+    vote_count += upvote_amt;
+    $(fullPath).find(".vote_count").html(vote_count.toString());
+}
+
+
 function reupdateArrows(){
     $('.voting_arrow_down').hover(function(){
         $(this).find("a").css("color","red");
@@ -44,6 +67,7 @@ function reupdateArrows(){
         e.preventDefault();
         unique_id = $(this).parent().attr('id');
         var upvote_amt = 0;
+        var downvotedNew = true;
 
         // Both up and down unactivated, send -1
         if ($(this).find("a").attr("pressed") === undefined &&
@@ -65,6 +89,7 @@ function reupdateArrows(){
 
             addUpvote(unique_id, 1);
             upvote_amt = 1;
+            downvotedNew = false;
 
         }
 
@@ -90,6 +115,22 @@ function reupdateArrows(){
         vote_count += upvote_amt;
         $(this).parent().find(".vote_count").html(vote_count.toString());
 
+        if (downvotedNew){
+            downvoted_ids = JSON.parse(Cookies.get('downvotedIds'))
+            downvoted_ids.push(unique_id);
+            Cookies.set('downvotedIds', JSON.stringify(downvoted_ids));
+        }
+
+        else{
+            downvoted_ids = JSON.parse(Cookies.get('downvotedIds'))
+            var index = downvoted_ids.indexOf(unique_id.toString());
+            console.log(downvoted_ids);
+            if (index > -1) {
+                downvoted_ids.splice(index, 1);
+                Cookies.set('downvotedIds', JSON.stringify(downvoted_ids));
+            }
+        }
+
     });
 
     $('.voting_arrow_up').hover(function(){
@@ -105,6 +146,7 @@ function reupdateArrows(){
         unique_id = $(this).parent().attr('id');
 
         var upvote_amt = 0;
+        var upvotedNew = true;
 
         // Both up and down unactivated, send 1
         if ($(this).find("a").attr("pressed") === undefined &&
@@ -127,6 +169,7 @@ function reupdateArrows(){
 
             addUpvote(unique_id, -1);
             upvote_amt = -1;
+            upvotedNew = false;
         }
 
         // Down arrow is activated, cancel out by sending +2
@@ -150,6 +193,23 @@ function reupdateArrows(){
         var vote_count = parseInt($(this).parent().find(".vote_count").html());
         vote_count += upvote_amt;
         $(this).parent().find(".vote_count").html(vote_count.toString());
+
+        if (upvotedNew){
+            upvoted_ids = JSON.parse(Cookies.get('upvotedIds'))
+            upvoted_ids.push(unique_id);
+            Cookies.set('upvotedIds', JSON.stringify(upvoted_ids));
+        }
+
+        else{
+            upvoted_ids = JSON.parse(Cookies.get('upvotedIds'))
+            var index = upvoted_ids.indexOf(unique_id.toString());
+            console.log(index);
+            if (index > -1) {
+                upvoted_ids.splice(index, 1);
+                Cookies.set('upvotedIds', JSON.stringify(upvoted_ids));
+            }
+        }
+
     });
 
     $('.mark_answered').click(function(e){
@@ -260,6 +320,17 @@ function callUpdate(apiLocation) {
                 }
 
                 reupdateArrows();
+
+                var upvoted_ids = JSON.parse(Cookies.get('upvotedIds'))
+                for (i = 0; i < upvoted_ids.length; ++i){
+                    restoreCurrentVotes(upvoted_ids[i], true);
+                }
+
+                var downvoted_ids = JSON.parse(Cookies.get('downvotedIds'))
+                for (i = 0; i < downvoted_ids.length; ++i){
+                    restoreCurrentVotes(downvoted_ids[i], false);
+                }
+
             }
 
         }
@@ -267,6 +338,16 @@ function callUpdate(apiLocation) {
 }
 
 $(document).ready(function() {
+    if (Cookies.get('upvotedIds') == undefined){
+        var upvotedIds = [];
+        Cookies.set('upvotedIds', JSON.stringify(upvotedIds));
+    }
+
+    if (Cookies.get('downvotedIds') == undefined){
+        var downvotedIds = [];
+        Cookies.set('downvotedIds', JSON.stringify(downvotedIds));
+    }
+
     $(".key_button").click(function(){
         if ($(this).hasClass("activate")) { // TODO do not disactivate if user is an admin! This is "feedback" that user is admin
             $(this).removeClass("activate");
@@ -356,7 +437,7 @@ $(document).ready( function() {
 
     var room_ = window.location.pathname.toString();
     room_ = room_.substr(1, room_.length);
-    var socket = io.connect('https://' + document.domain + ':' + location.port);
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
 
     socket.emit('join', {room: room_});
 

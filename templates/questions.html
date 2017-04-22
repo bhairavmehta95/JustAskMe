@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <!-- Load things related to jQuery and  -->
+    <script type="text/javascript" src="{{ url_for('static', filename='js/js.cookie.js') }}"></script>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
     <link rel='stylesheet prefetch' href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css'>
@@ -61,4 +62,3 @@
         var currentUser = null;
     {% endif %}
 </script>
-''

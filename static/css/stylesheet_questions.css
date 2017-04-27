@@ -50,16 +50,6 @@ body {
     /*background-color: yellow;*/
 }
 
-.voting_arrow_up a:hover,
-.voting_arrow_up a:active {
-    color: green;
-}
-
-.voting_arrow_down a:hover,
-.voting_arrow_down a:active {
-    color: red;
-}
-
 .vote_count {
     padding-top: 3px;
     padding-bottom: 3px;
@@ -108,6 +98,13 @@ body {
     padding-bottom: 5px;
 }
 
+.timestamp {
+    overflow: hidden;
+    padding-left: 10px;
+    padding-top: 20px;
+    font-size: 12px;
+}
+
 .bottom_panel {
     position: fixed;
     bottom: 0;
@@ -149,6 +146,25 @@ body {
     border-color: black;
 }
 
+.submit_admin_button {
+    float: right;
+    width: 17px;
+    padding : 5px;
+    border: solid 2px black;
+    border-radius: 40px;
+    margin: 5px;
+    text-align: center;
+    background-color: white;
+    color: black;
+    border-color: black;
+    display: none;
+}
+
+.submit_admin_button.activate {
+    background-color: lightblue;
+    border-color: lightblue;
+}
+
 .key_button.activate {
     background-color: red;
     color: white;
@@ -171,10 +187,17 @@ body {
     background-color: green;
 }
 
+.submit_admin_button:hover,
+.submit_admin_button:active{
+    background-color: lightblue;
+}
+
 .key_button:hover,
 .key_button:active,
 .new_question_button:hover,
-.new_question_button:active {
+.new_question_button:active,
+.submit_admin_button:hover,
+.submit_admin_button:active {
     cursor: pointer;
 }
 
@@ -225,7 +248,7 @@ body {
     margin: 0;
     width: 100%;
     height: 100%;
-    background-color: #ff7d83;
+    background-color: #ffffff;
     padding-left: 10px;
     margin-left: -10px;
 }

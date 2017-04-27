@@ -14,10 +14,10 @@ def namespace_exists(namespace):
     nr = cursor.execute("SELECT * FROM admins WHERE namespace='{}'".format(namespace))
     return cursor.rowcount != 0
 
-# Get the admin passcode corresponding to the namespace
-# TODO encryption! This is not safe...
 def get_admin_pass(namespace):
-    cursor.execute("SELECT * FROM admins WHERE namespace='"+namespace)
+    cursor.execute("SELECT admin_pass FROM admins WHERE namespace='{}'".format(namespace))
+    password = cursor.fetchone()
+    return password[0]
 
 # Remove admin passcode from namespace
 def remove_admin(admin_pass):
@@ -39,14 +39,19 @@ def get_questions_sorted_top_unanswered(namespace_value):
 
 # Sort unanswered questions with newest first
 def get_questions_sorted_new_unanswered(namespace_value):
-    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'AND answered=0 ORDER BY posted_time")
+    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"'AND answered=0 ORDER BY posted_time DESC")
     return cursor.fetchall()
 
 # Get the answered questions, ordered chronologically
 def get_questions_sorted_answered(namespace_value):
-    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"' AND answered=1 ORDER BY posted_time")
+    cursor.execute("SELECT * FROM questions WHERE namespace='"+namespace_value+"' AND answered=1 ORDER BY posted_time DESC")
     return cursor.fetchall()
 
+def answer_question(unique_id):
+    cursor.execute("UPDATE questions SET answered=1 WHERE QuestionID="+str(unique_id))
+
+def delete_question(unique_id):
+    cursor.execute("DELETE FROM questions WHERE QuestionID=" + str(unique_id))
 
 # Increase by one the number of upvotes of question corresopnding to unique ID
 def increment_upvotes_by_one(unique_id, add_upvote):

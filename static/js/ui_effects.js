@@ -3,8 +3,9 @@ $("#inpt_search").on('focus', function () {
 });
 
 $("#inpt_search").on('blur', function () {
-    if($(this).val().length == 0)
+    if( $("#inpt_search").val().length == 0 ) {
         $(this).parent('label').removeClass('active');
+    }
 });
 
 $(document).ready(function() {
@@ -39,9 +40,16 @@ $(document).ready(function() {
                     data: JSON.stringify(DataToSend),
                     success: function(data) {
                         obj = JSON.parse(data);
+
+                        if (obj.exists == true){
+                            window.location = window.location.href + obj.namespace;
+                        }
+
                         $('#administrator_pass_id').text("Administor Passcode: " + obj.password);
                         $('#questionbank_name_id').text("Question Bank Name: " + obj.namespace);
                         $('.popup').show("slow");
+
+
 
                         $('#button').click(function() {
                                 var DataToSend = new Object();

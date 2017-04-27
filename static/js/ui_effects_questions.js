@@ -45,11 +45,6 @@ function restoreCurrentVotes(unique_id, isUpvoted){
         $(fullPath).find(".voting_arrow_down").find("a").css("color","red");
         upvote_amt = -1;
     }
-
-    // update number
-    var vote_count = parseInt($(fullPath).find(".vote_count").html());
-    vote_count += upvote_amt;
-    $(fullPath).find(".vote_count").html(vote_count.toString());
 }
 
 
@@ -63,11 +58,11 @@ function reupdateArrows(){
     });
 
     $('.voting_arrow_down').click(function(e){
-        console.log($(this).parent().find(".voting_arrow_up").find("a").attr("pressed"));
         e.preventDefault();
         unique_id = $(this).parent().attr('id');
         var upvote_amt = 0;
         var downvotedNew = true;
+        var wasUpvoted = false;
 
         // Both up and down unactivated, send -1
         if ($(this).find("a").attr("pressed") === undefined &&
@@ -108,6 +103,8 @@ function reupdateArrows(){
 
             addUpvote(unique_id, -2);
             upvote_amt = -2;
+
+            wasUpvoted = true;
         }
 
         // update number
@@ -118,16 +115,27 @@ function reupdateArrows(){
         if (downvotedNew){
             downvoted_ids = JSON.parse(Cookies.get('downvotedIds'))
             downvoted_ids.push(unique_id);
+            Cookies.remove('downvotedIds');
             Cookies.set('downvotedIds', JSON.stringify(downvoted_ids));
         }
 
         else{
             downvoted_ids = JSON.parse(Cookies.get('downvotedIds'))
             var index = downvoted_ids.indexOf(unique_id.toString());
-            console.log(downvoted_ids);
             if (index > -1) {
                 downvoted_ids.splice(index, 1);
+                Cookies.remove('downvotedIds');
                 Cookies.set('downvotedIds', JSON.stringify(downvoted_ids));
+            }
+        }
+
+        if (wasUpvoted){
+            upvoted_ids = JSON.parse(Cookies.get('upvotedIds'))
+            var index = upvoted_ids.indexOf(unique_id.toString());
+            if (index > -1) {
+                upvoted_ids.splice(index, 1);
+                Cookies.remove('upvotedIds');
+                Cookies.set('upvotedIds', JSON.stringify(upvoted_ids));
             }
         }
 
@@ -136,7 +144,7 @@ function reupdateArrows(){
     $('.voting_arrow_up').hover(function(){
         $(this).find("a").css("color","green");
     }, function(){
-        if ($(this).find("a").attr("pressed") === undefined) {
+        if ($(this).find("a").attr("pressed") == undefined) {
             $(this).find("a").css("color", "black");
         }
     });
@@ -147,6 +155,7 @@ function reupdateArrows(){
 
         var upvote_amt = 0;
         var upvotedNew = true;
+        var wasDownvoted = false;
 
         // Both up and down unactivated, send 1
         if ($(this).find("a").attr("pressed") === undefined &&
@@ -187,16 +196,20 @@ function reupdateArrows(){
 
             addUpvote(unique_id, 2);
             upvote_amt = 2;
+
+            wasDownvoted = true;
         }
 
         // update number
         var vote_count = parseInt($(this).parent().find(".vote_count").html());
         vote_count += upvote_amt;
-        $(this).parent().find(".vote_count").html(vote_count.toString());
+        $(this).parent().find(".vote_count").html(vote_count);
 
         if (upvotedNew){
             upvoted_ids = JSON.parse(Cookies.get('upvotedIds'))
+            console.log(upvoted_ids);
             upvoted_ids.push(unique_id);
+            Cookies.remove('upvotedIds');
             Cookies.set('upvotedIds', JSON.stringify(upvoted_ids));
         }
 
@@ -206,7 +219,19 @@ function reupdateArrows(){
             console.log(index);
             if (index > -1) {
                 upvoted_ids.splice(index, 1);
+                console.log(upvoted_ids);
+                Cookies.remove('upvotedIds');
                 Cookies.set('upvotedIds', JSON.stringify(upvoted_ids));
+            }
+        }
+
+        if (wasDownvoted){
+            downvoted_ids = JSON.parse(Cookies.get('downvotedIds'))
+            var index = downvoted_ids.indexOf(unique_id.toString());
+            if (index > -1) {
+                downvoted_ids.splice(index, 1);
+                Cookies.remove('downvotedIds');
+                Cookies.set('downvotedIds', JSON.stringify(downvoted_ids));
             }
         }
 
@@ -338,12 +363,12 @@ function callUpdate(apiLocation) {
 }
 
 $(document).ready(function() {
-    if (Cookies.get('upvotedIds') == undefined){
+    if (Cookies.get('upvotedIds') === undefined){
         var upvotedIds = [];
         Cookies.set('upvotedIds', JSON.stringify(upvotedIds));
     }
 
-    if (Cookies.get('downvotedIds') == undefined){
+    if (Cookies.get('downvotedIds') === undefined){
         var downvotedIds = [];
         Cookies.set('downvotedIds', JSON.stringify(downvotedIds));
     }

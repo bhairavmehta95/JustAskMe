@@ -1,16 +1,9 @@
-
-
-
 $(document).ready(function() {
-    //
-    // if( $("#inpt_search").val().length == 0 ) {
-    //     $(this).parent('label').removeClass('active');
-    // }
-
     $(".search").on('mouseover', function() {
         $(this).addClass("active");
         $(".user_instructions").text("Type the question bank name to join or to create");
     });
+
     $(".search").on('mouseout', function() {
         if ($("#inpt_search").val().length == 0) {
             $(this).removeClass("active");
@@ -24,12 +17,17 @@ $(document).ready(function() {
     });
 
     $(document).keydown(function(event) {
-      var sz = $("#inpt_search").val().length;
+        if ($(".search").hasClass("active") == false){
+            event.preventDefault();
+            return;
+        }
 
-      if (sz > 2){
-          var b = $("#inpt_search").val().replace(/[^a-z0-9]/gi,'');
+        var sz = $("#inpt_search").val().length;
 
-          if (event.keyCode == 13 && b != ''){
+        if (sz > 2){
+            var b = $("#inpt_search").val().replace(/[^a-z0-9]/gi,'');
+
+            if (event.keyCode == 13 && b != ''){
                 var DataToSend = new Object();
                 DataToSend = {
                     namespace : $("#inpt_search").val()
@@ -78,7 +76,7 @@ $(document).ready(function() {
                         return_val = '';
                     },
                 }); // ajax
-          } // if kc == 13
+            } // if kc == 13
 
             else if (b == ''){
                 $(".user_instructions").text("Oops, only alphanumeric characters!");
@@ -88,8 +86,8 @@ $(document).ready(function() {
                 $(".user_instructions").text("Hover to find or to create a question bank");
             }
 
-          }// sz =2
-      });
+        }// sz =2
+        });
     });
 
 

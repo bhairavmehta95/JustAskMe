@@ -450,11 +450,17 @@ $(document).ready( function() {
     namespace = '/';
 
     var room_ = window.location.pathname.toString();
+
+    // set title
+    document.title = "JustAskMe" + room_;
+
     room_ = room_.substr(1, room_.length);
     var socket = io.connect('https://' + document.domain + ':' + location.port);
 
+    // send join room command
     socket.emit('join', {room: room_});
 
+    // connect
     socket.on('connect', function() {
         socket.emit('my event', {data: 'I\'m connected!'});
     });
@@ -485,3 +491,31 @@ $(document).ready( function() {
 
 });
 
+// Every five seconds, see if it is not in focus
+// If not, reload the page cleanly
+$(document).ready(function() {
+    var window_focus;
+
+    $(window).focus(function() {
+        window_focus = true;
+    })
+    .blur(function() {
+        window_focus = false;
+    });
+
+    setInterval(function() {
+        if (window_focus == false){
+            var ordering = getCookie("ordering");
+
+            if (ordering == "top"){
+                callUpdate('api/getRowsTop');
+            }
+            else if (ordering == "answered"){
+                callUpdate('api/getAnswered');
+            }
+            else {
+                callUpdate('api/getRowsChron');
+            }
+        }
+    }, 5000);
+});

@@ -50,20 +50,19 @@ p {
     -webkit-transition: all 200ms ease;
     transition: all 200ms ease;
 }
-.search.active,
-.search:hover {
+.search.active{
     width: 200px;
     margin-right: 0px;
 }
-.search.active,
-.search:hover input {
+.search.active input {
     width: 180px;
     margin-right: 0px;
 }
-.search.active:after,
-.search:hover:after {
+
+.search.active:after {
     height: 0px;
 }
+
 .search input {
     width: 100%;
     border: none;
@@ -73,6 +72,8 @@ p {
     color: inherit;
     background: transparent;
     outline-width: 0px;
+    text-align: center;
+    margin-bottom: 1px;
     /*display: none;*/
 }
 

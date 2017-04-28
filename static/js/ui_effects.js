@@ -1,19 +1,21 @@
-$("#inpt_search").on('focus', function () {
-    $(this).parent('label').addClass('active');
-});
 
-$("#inpt_search").on('blur', function () {
-    if( $("#inpt_search").val().length == 0 ) {
-        $(this).parent('label').removeClass('active');
-    }
-});
+
 
 $(document).ready(function() {
+    //
+    // if( $("#inpt_search").val().length == 0 ) {
+    //     $(this).parent('label').removeClass('active');
+    // }
+
     $(".search").on('mouseover', function() {
+        $(this).addClass("active");
         $(".user_instructions").text("Type the question bank name to join or to create");
     });
     $(".search").on('mouseout', function() {
-        $(".user_instructions").text("Hover to find or to create a question bank");
+        if ($("#inpt_search").val().length == 0) {
+            $(this).removeClass("active");
+            $(".user_instructions").text("Hover to find or to create a question bank");
+        }
     });
 
     $('a.close').click(function (event) {
@@ -45,11 +47,11 @@ $(document).ready(function() {
                             window.location = window.location.href + obj.namespace;
                         }
 
-                        $('#administrator_pass_id').text("Administor Passcode: " + obj.password);
-                        $('#questionbank_name_id').text("Question Bank Name: " + obj.namespace);
-                        $('.popup').show("slow");
-
-
+                        else {
+                            $('#administrator_pass_id').text("Administor Passcode: " + obj.password);
+                            $('#questionbank_name_id').text("Question Bank Name: " + obj.namespace);
+                            $('.popup').show("slow");
+                        }
 
                         $('#button').click(function() {
                                 var DataToSend = new Object();

@@ -371,7 +371,7 @@ $(document).ready(function() {
             $("#view_options").css("display", "initial");
 
         } else {
-            
+
             $(this).addClass("activate");
             $('.admin_code').animate({width: 'toggle'}, {duration: 200});
             $(".submit_admin_button").css("display", "inline");

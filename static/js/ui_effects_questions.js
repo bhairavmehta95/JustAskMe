@@ -364,14 +364,21 @@ $(document).ready(function() {
 
     $(".key_button").click(function(){
         if ($(this).hasClass("activate")) { // TODO do not disactivate if user is an admin! This is "feedback" that user is admin
+            $('.admin_code').css("display", "none");
             $(this).removeClass("activate");
-            $('.admin_code').animate({width: 'toggle'}, {duration: 200});
             $(".submit_admin_button").css("display", "none");
+
+            $("#view_options").css("display", "initial");
+
         } else {
+            
             $(this).addClass("activate");
             $('.admin_code').animate({width: 'toggle'}, {duration: 200});
             $(".submit_admin_button").css("display", "inline");
             $(".submit_admin_button").addClass("activate");
+
+            // remove all other options
+            $("#view_options").css("display", "none");
         }
     });
 
@@ -455,7 +462,7 @@ $(document).ready( function() {
     document.title = "JustAskMe" + room_;
 
     room_ = room_.substr(1, room_.length);
-    var socket = io.connect('https://' + document.domain + ':' + location.port);
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
 
     // send join room command
     socket.emit('join', {room: room_});

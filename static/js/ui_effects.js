@@ -1,27 +1,5 @@
 $(document).ready(function() {
-    $(".search").on('mouseover', function() {
-        $(this).addClass("active");
-        $(".user_instructions").text("Type the question bank name to join or to create");
-    });
-
-    $(".search").on('mouseout', function() {
-        if ($("#inpt_search").val().length == 0) {
-            $(this).removeClass("active");
-            $(".user_instructions").text("Hover to find or to create a question bank");
-        }
-    });
-
-    $('a.close').click(function (event) {
-        event.preventDefault();
-        $('.popup').hide("slow");
-    });
-
     $(document).keydown(function(event) {
-        if ($(".search").hasClass("active") == false){
-            event.preventDefault();
-            return;
-        }
-
         var sz = $("#inpt_search").val().length;
 
         if (sz > 2){
@@ -83,13 +61,22 @@ $(document).ready(function() {
             }
 
             else{
-                $(".user_instructions").text("Hover to find or to create a question bank");
+                $(".user_instructions").text("Whenever you're ready!");
             }
 
         }// sz =2
-        });
+
+        else{
+            $(".user_instructions").text("Search for a question bank")
+        }
+
     });
 
+    $("#close_popup").click(function(event){
+        event.preventDefault();
+        $(".popup").css("display", "none");
+    });
+});
 
 
 

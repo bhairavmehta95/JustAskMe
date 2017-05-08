@@ -10,9 +10,10 @@
     <link rel='stylesheet prefetch' href='https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css'>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }} ">
     <script src="{{ url_for('static', filename='js/ui_effects.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='semantic/semantic.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }} ">
+
 
 </head>
 <body>
@@ -22,16 +23,19 @@
         <div class="logo">
             <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="">
         </div>
-        <label class="search" for="inpt_search">
-            <input id="inpt_search" type="text" style="color: white;" />
-        </label>
-        <p class="user_instructions" style="color: white;">Hover to find or to create a question bank</p>
+
+        <div class="ui inverted transparent icon input massive">
+            <input id="inpt_search" type="text" placeholder="Search...">
+            <i class="search icon"></i>
+        </div>
+
+        <p class="user_instructions">Search for a question bank</p>
     </div>
 </div>
 
 <div class="popup">
 
-    <a href="#" class="close">
+    <a id="close_popup" href="" class="close">
         <i class="fa fa-times" aria-hidden="true"></i>
     </a>
 

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-
+    <title> JustAskMe </title>
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
 
@@ -10,9 +10,10 @@
     <link rel='stylesheet prefetch' href='https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css'>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }} ">
     <script src="{{ url_for('static', filename='js/ui_effects.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='semantic/semantic.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }} ">
+
 
 </head>
 <body>
@@ -22,16 +23,21 @@
         <div class="logo">
             <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="">
         </div>
-        <label class="search" for="inpt_search">
-            <input id="inpt_search" type="text" style="color: white;" />
-        </label>
-        <p class="user_instructions" style="color: white;">Hover to find or to create a question bank</p>
+
+        <div class="ui inverted transparent icon input massive">
+            <input id="inpt_search" type="text" placeholder="Search...">
+            <i class="search icon"></i>
+        </div>
+
+        <p class="user_instructions">Search for a question bank</p>
+
     </div>
+
 </div>
 
 <div class="popup">
 
-    <a href="#" class="close">
+    <a id="close_popup" href="" class="close">
         <i class="fa fa-times" aria-hidden="true"></i>
     </a>
 
@@ -48,6 +54,8 @@
 
 
 </div>
+
+<a href="https://github.com/bhairavmehta95/JustAskMe"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/c6286ade715e9bea433b4705870de482a654f78a/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_white_ffffff.png"></a>
 
 </body>
 </html>

@@ -47,6 +47,32 @@ function restoreCurrentVotes(unique_id, isUpvoted){
     }
 }
 
+function updateCookies(unique_id, isUpvoted, isRemoved){
+    var voteArray;
+    var arrayString;
+
+    if (isUpvoted){
+        voteArray = JSON.parse(Cookies.get('upvotedIds'));
+        arrayString = 'upvotedIds';
+    }
+    else{
+        voteArray = JSON.parse(Cookies.get('downvotedIds'));
+        arrayString = 'downvotedIds';
+    }
+
+    if (isRemoved){
+        var index = voteArray.indexOf(unique_id.toString());
+        if (index > -1) {
+            voteArray.splice(index, 1);
+            Cookies.set(arrayString, JSON.stringify(voteArray));
+        }
+    }
+
+    else{
+        voteArray.push(unique_id);
+        Cookies.set(arrayString, JSON.stringify(voteArray));
+    }
+}
 
 function reupdateArrows(){
     $('.voting_arrow_down').hover(function(){
@@ -113,30 +139,15 @@ function reupdateArrows(){
         $(this).parent().find(".vote_count").html(vote_count.toString());
 
         if (downvotedNew){
-            downvoted_ids = JSON.parse(Cookies.get('downvotedIds'))
-            downvoted_ids.push(unique_id);
-            Cookies.remove('downvotedIds');
-            Cookies.set('downvotedIds', JSON.stringify(downvoted_ids));
+            updateCookies(unique_id, false, false);
         }
 
         else{
-            downvoted_ids = JSON.parse(Cookies.get('downvotedIds'))
-            var index = downvoted_ids.indexOf(unique_id.toString());
-            if (index > -1) {
-                downvoted_ids.splice(index, 1);
-                Cookies.remove('downvotedIds');
-                Cookies.set('downvotedIds', JSON.stringify(downvoted_ids));
-            }
+            updateCookies(unique_id, false, true);
         }
 
         if (wasUpvoted){
-            upvoted_ids = JSON.parse(Cookies.get('upvotedIds'))
-            var index = upvoted_ids.indexOf(unique_id.toString());
-            if (index > -1) {
-                upvoted_ids.splice(index, 1);
-                Cookies.remove('upvotedIds');
-                Cookies.set('upvotedIds', JSON.stringify(upvoted_ids));
-            }
+            updateCookies(unique_id, true, true);
         }
 
     });
@@ -206,33 +217,15 @@ function reupdateArrows(){
         $(this).parent().find(".vote_count").html(vote_count);
 
         if (upvotedNew){
-            upvoted_ids = JSON.parse(Cookies.get('upvotedIds'))
-            console.log(upvoted_ids);
-            upvoted_ids.push(unique_id);
-            Cookies.remove('upvotedIds');
-            Cookies.set('upvotedIds', JSON.stringify(upvoted_ids));
+            updateCookies(unique_id, true, false);
         }
 
         else{
-            upvoted_ids = JSON.parse(Cookies.get('upvotedIds'))
-            var index = upvoted_ids.indexOf(unique_id.toString());
-            console.log(index);
-            if (index > -1) {
-                upvoted_ids.splice(index, 1);
-                console.log(upvoted_ids);
-                Cookies.remove('upvotedIds');
-                Cookies.set('upvotedIds', JSON.stringify(upvoted_ids));
-            }
+            updateCookies(unique_id, true, true);
         }
 
         if (wasDownvoted){
-            downvoted_ids = JSON.parse(Cookies.get('downvotedIds'))
-            var index = downvoted_ids.indexOf(unique_id.toString());
-            if (index > -1) {
-                downvoted_ids.splice(index, 1);
-                Cookies.remove('downvotedIds');
-                Cookies.set('downvotedIds', JSON.stringify(downvoted_ids));
-            }
+            updateCookies(unique_id, false, true);
         }
 
     });
@@ -252,9 +245,7 @@ function reupdateArrows(){
             type: 'POST',
             data: JSON.stringify(DataToSend),
             success: function (data) {},
-            error: function(){
-                console.log("oops");
-            },
+            error: function(){},
         });
 
         var apiLocation = "api/getRowsChron";
@@ -279,9 +270,7 @@ function reupdateArrows(){
             type: 'POST',
             data: JSON.stringify(DataToSend),
             success: function (data) {},
-            error: function(){
-                console.log("oops");
-            },
+            error: function(){},
         });
 
         var apiLocation = "api/getRowsChron";
@@ -375,14 +364,21 @@ $(document).ready(function() {
 
     $(".key_button").click(function(){
         if ($(this).hasClass("activate")) { // TODO do not disactivate if user is an admin! This is "feedback" that user is admin
+            $('.admin_code').css("display", "none");
             $(this).removeClass("activate");
-            $('.admin_code').animate({width: 'toggle'}, {duration: 200});
             $(".submit_admin_button").css("display", "none");
+
+            $("#view_options").css("display", "initial");
+
         } else {
+
             $(this).addClass("activate");
             $('.admin_code').animate({width: 'toggle'}, {duration: 200});
             $(".submit_admin_button").css("display", "inline");
             $(".submit_admin_button").addClass("activate");
+
+            // remove all other options
+            $("#view_options").css("display", "none");
         }
     });
 
@@ -403,8 +399,6 @@ $(document).ready(function() {
             password : $('input#admin_code_input').val()
         }
 
-        console.log(DataToSend);
-
         $.ajax({
             headers: { "Content-Type": "application/json"},
             url: '/api/verifyAdmin',
@@ -416,7 +410,7 @@ $(document).ready(function() {
                     window.location.href = window.location.href;
                 }
                 else{
-                    console.log("wrong pw");
+                    // TODO: wrong password, maybe CSS?
                 }
             }
         });
@@ -438,7 +432,8 @@ $(document).ready(function() {
     });
 });
 
-$(function() {
+// CSS descriptor section
+$(document).ready(function() {
     $( "#button" ).click(function() {
         $( "#button" ).addClass( "onclic", 250, validate);
     });
@@ -456,16 +451,23 @@ $(function() {
     }
 });
 
+// Socket section
 $(document).ready( function() {
 
     namespace = '/';
 
     var room_ = window.location.pathname.toString();
-    room_ = room_.substr(1, room_.length);
-    var socket = io.connect('https://' + document.domain + ':' + location.port);
 
+    // set title
+    document.title = "JustAskMe" + room_;
+
+    room_ = room_.substr(1, room_.length);
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+    // send join room command
     socket.emit('join', {room: room_});
 
+    // connect
     socket.on('connect', function() {
         socket.emit('my event', {data: 'I\'m connected!'});
     });
@@ -484,7 +486,6 @@ $(document).ready( function() {
         room_ = room_.substr(1, room_.length);
 
         var new_question = $(this).parent().parent().find('.new_question_formulation').val();
-        console.log(new_question);
         socket.emit('my room event', {room: room_, data: new_question});
 
         $('.new_question_formulation').text('');
@@ -497,3 +498,31 @@ $(document).ready( function() {
 
 });
 
+// Every five seconds, see if it is not in focus
+// If not, reload the page cleanly
+$(document).ready(function() {
+    var window_focus;
+
+    $(window).focus(function() {
+        window_focus = true;
+    })
+    .blur(function() {
+        window_focus = false;
+    });
+
+    setInterval(function() {
+        if (window_focus == false){
+            var ordering = getCookie("ordering");
+
+            if (ordering == "top"){
+                callUpdate('api/getRowsTop');
+            }
+            else if (ordering == "answered"){
+                callUpdate('api/getAnswered');
+            }
+            else {
+                callUpdate('api/getRowsChron');
+            }
+        }
+    }, 5000);
+});

@@ -1,18 +1,9 @@
-# set async_mode to 'threading', 'eventlet', 'gevent' or 'gevent_uwsgi' to
-# force a mode else, the best mode is selected automatically from what's
-# installed
-async_mode = None
-
+from flask import *
 import random, string
-
-from mysql_backend import *
 import re
-from flask_socketio import SocketIO, join_room, send, emit
 
-application = Flask(__name__)
-sio = SocketIO(application)
-application.config['SECRET_KEY'] = 'es2uD2da32h4fRV328u5eg7Tufhd2du'
-application.secret_key = 'es2uD2da32h4fRV328u5eg7Tufhd2du'
+from socket_utility import *
+
 
 @application.route('/index')
 @application.route('/')
@@ -30,7 +21,7 @@ def room(room):
             add_admin(new_passw, room)     # Add a new admin to the admin table
         else:
             return redirect(room)
-    return render_template('questions.html')    
+    return render_template('questions.html')
 
 @application.route('/api/genAdminPw', methods=['POST'])
 def gen_admin_pw():
@@ -40,28 +31,30 @@ def gen_admin_pw():
     if namespace_exists(namespace):
         url_new = '/' + namespace
         return json.dumps({
-            'exists' : True,
+            'exists': True,
             'namespace': namespace
         })
 
     new_passw = ''.join(random.choice(string.ascii_lowercase) for i in range(6))
     return json.dumps({
-        'password':new_passw,
-        'namespace':namespace,
-        'exists' : False
-        })
+        'password': new_passw,
+        'namespace': namespace,
+        'exists': False
+    })
 
-@application.route('/api/addRow', methods = ['POST'])
+
+@application.route('/api/addRow', methods=['POST'])
 def api_add_row():
     json_data = request.json
     namespace = json_data['namespace']
     question = json_data['question']
 
     add_question(question, namespace)
-    
+
     return json.dumps({
-        'status_code' : 200
+        'status_code': 200
     })
+
 
 @application.route('/api/getAnsweredChron', methods=['POST'])
 def api_answered_chron():
@@ -71,7 +64,7 @@ def api_answered_chron():
     get_questions_sorted_answered(namespace)
 
     return json.dumps({
-        'status_code' : 200
+        'status_code': 200
     })
 
 
@@ -88,15 +81,15 @@ def api_verify_admin():
         session['room'] = str(namespace)
 
         return json.dumps({
-            'verified' : True
+            'verified': True
         })
     else:
         return json.dumps({
-            'verified' : False
+            'verified': False
         })
 
 
-@application.route('/api/addAdmin', methods = ['POST'])
+@application.route('/api/addAdmin', methods=['POST'])
 def api_add_admin():
     namespace = json.loads(request.data).get('namespace')
     admin_pass = json.loads(request.data).get('password')
@@ -104,10 +97,11 @@ def api_add_admin():
     add_admin(admin_pass, namespace)
 
     return json.dumps({
-        'status_code' : 200
+        'status_code': 200
     })
 
-@application.route('/api/getAnswered', methods = ['POST'])
+
+@application.route('/api/getAnswered', methods=['POST'])
 def api_get_answered_chron():
     json_data = request.json
     namespace = json_data['namespace']
@@ -132,11 +126,11 @@ def api_get_answered_chron():
     })
 
 
-@application.route('/api/getRowsChron', methods = ['POST'])
+@application.route('/api/getRowsChron', methods=['POST'])
 def api_get_rows_chron():
     json_data = request.json
     namespace = json_data['namespace']
-    
+
     rows = get_questions_sorted_new_unanswered(namespace)
     unique_ids = []
     questions = []
@@ -148,20 +142,20 @@ def api_get_rows_chron():
         questions.append(val[1])
         upvotes.append(val[2])
         timestamps.append(val[3])
-        
+
     return json.dumps({
-        'unique_ids' : unique_ids,
-        'questions' : questions,
-        'timestamps' : timestamps,
-        'upvotes' : upvotes
-        })
+        'unique_ids': unique_ids,
+        'questions': questions,
+        'timestamps': timestamps,
+        'upvotes': upvotes
+    })
 
 
 @application.route('/api/getRowsTop', methods=['POST'])
 def api_get_rows_top():
     json_data = request.json
     namespace = json_data['namespace']
-    
+
     rows = get_questions_sorted_top_unanswered(namespace)
     questions = []
     timestamps = []
@@ -175,11 +169,12 @@ def api_get_rows_top():
         timestamps.append(val[3])
 
     return json.dumps({
-        'unique_ids' : unique_ids,
-        'questions' : questions,
-        'timestamps' : timestamps,
-        'upvotes' : upvotes
-        })
+        'unique_ids': unique_ids,
+        'questions': questions,
+        'timestamps': timestamps,
+        'upvotes': upvotes
+    })
+
 
 @application.route('/api/addUpvote', methods=['POST'])
 def api_add_upvote():
@@ -191,7 +186,8 @@ def api_add_upvote():
 
     return json.dumps({
 
-        })
+    })
+
 
 @application.route('/api/answerQuestion', methods=['POST'])
 def api_answer_question():
@@ -202,7 +198,8 @@ def api_answer_question():
 
     return json.dumps({
 
-        })
+    })
+
 
 @application.route('/api/deleteQuestion', methods=['POST'])
 def api_delete_question():
@@ -213,47 +210,32 @@ def api_delete_question():
 
     return json.dumps({
 
-        })
+    })
 
-@application.route('/api/sortChron', methods = ['POST'])
+
+@application.route('/api/sortChron', methods=['POST'])
 def sort_chronological():
     json_data = request.json
     namespace_value = request['namespace']
     order = get_questions_sorted_new_unanswered(namespace_value)
     return json.dumps({
-        'questions' : order['string'],
-        'timestamps' : order['posted_time'],
-        'upvotes'  :order['upvotes']
-        })
+        'questions': order['string'],
+        'timestamps': order['posted_time'],
+        'upvotes': order['upvotes']
+    })
 
-@application.route('/api/sortTop', methods = ['POST'])
+
+@application.route('/api/sortTop', methods=['POST'])
 def sort_top():
     json_data = request.json
     namespace_value = request['namespace']
     order = get_questions_sorted_top_unanswered(namespace_value)
     return json.dumps({
-        'questions' : order['string'],
-        'timestamps' : order['posted_time'],
-        'upvotes' : order['upvotes']
-        })
+        'questions': order['string'],
+        'timestamps': order['posted_time'],
+        'upvotes': order['upvotes']
+    })
 
-
-@sio.on('join', namespace='/')
-def join(message):
-    join_room(message['room'])
-    emit('my response', {'data': 'Entered room: ' + message['room']},
-             room=message['room'], namespace='/')
-
-
-@sio.on('my room event', namespace='/')
-def send_room_message(message):
-    add_question(message['data'], message['room'])
-    emit('my response', {'data': message['data']}, room=message['room'],
-             namespace='/')
-
-@sio.on('connect', namespace='/')
-def test_connect():
-    emit('my response', {'data': 'Connected', 'count': 0}, namespace='/')
 
 if __name__ == '__main__':
     sio.run(application)

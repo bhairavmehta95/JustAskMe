@@ -116,8 +116,8 @@ body {
 
 .become_admin {
     width: 100%;
-    height: 40px;
-    /*height: 35px;*/
+    height: 10%;
+    max-height: 40px;
 }
 
 .new_question_button {
@@ -220,6 +220,8 @@ body {
     font-family: "Oswald", sans-serif;
     font-weight: 300;
     line-height: 40px;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .become_admin nav li a {
@@ -237,8 +239,8 @@ body {
 .admin_code {
     float: right;
     height: 30px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    padding-top: 3px;
+    margin: auto;
     width: 200px;
     display: none;
 }
@@ -254,15 +256,14 @@ body {
 }
 
 .write_new_question {
-    height: 200px;
+    height: 20%;
     display: none;
-    border-top: solid 1px #e5dee3;
     padding: 10px;
 }
 
 .new_question_formulation {
     /*margin: 10px;*/
-    height: 150px;
+    height: 20vh;
     overflow: none;
     box-sizing:border-box;
     width: 100%;
@@ -273,6 +274,7 @@ body {
     margin-top: 5px;
     width: 130px;
     height: 40px;
+    padding: 4px;
     text-align: center;
 }
 button {

@@ -1,33 +1,11 @@
-$("#inpt_search").on('focus', function () {
-    $(this).parent('label').addClass('active');
-});
-
-$("#inpt_search").on('blur', function () {
-    if( $("#inpt_search").val().length == 0 ) {
-        $(this).parent('label').removeClass('active');
-    }
-});
-
 $(document).ready(function() {
-    $(".search").on('mouseover', function() {
-        $(".user_instructions").text("Type the question bank name to join or to create");
-    });
-    $(".search").on('mouseout', function() {
-        $(".user_instructions").text("Hover to find or to create a question bank");
-    });
-
-    $('a.close').click(function (event) {
-        event.preventDefault();
-        $('.popup').hide("slow");
-    });
-
     $(document).keydown(function(event) {
-      var sz = $("#inpt_search").val().length;
+        var sz = $("#inpt_search").val().length;
 
-      if (sz > 2){
-          var b = $("#inpt_search").val().replace(/[^a-z0-9]/gi,'');
+        if (sz > 2){
+            var b = $("#inpt_search").val().replace(/[^a-z0-9]/gi,'');
 
-          if (event.keyCode == 13 && b != ''){
+            if (event.keyCode == 13 && b != ''){
                 var DataToSend = new Object();
                 DataToSend = {
                     namespace : $("#inpt_search").val()
@@ -45,11 +23,11 @@ $(document).ready(function() {
                             window.location = window.location.href + obj.namespace;
                         }
 
-                        $('#administrator_pass_id').text("Administor Passcode: " + obj.password);
-                        $('#questionbank_name_id').text("Question Bank Name: " + obj.namespace);
-                        $('.popup').show("slow");
-
-
+                        else {
+                            $('#administrator_pass_id').text("Administor Passcode: " + obj.password);
+                            $('#questionbank_name_id').text("Question Bank Name: " + obj.namespace);
+                            $('.popup').show("slow");
+                        }
 
                         $('#button').click(function() {
                                 var DataToSend = new Object();
@@ -76,20 +54,29 @@ $(document).ready(function() {
                         return_val = '';
                     },
                 }); // ajax
-          } // if kc == 13
+            } // if kc == 13
 
             else if (b == ''){
                 $(".user_instructions").text("Oops, only alphanumeric characters!");
             }
 
             else{
-                $(".user_instructions").text("Hover to find or to create a question bank");
+                $(".user_instructions").text("Whenever you're ready!");
             }
 
-          }// sz =2
-      });
+        }// sz =2
+
+        else{
+            $(".user_instructions").text("Search for a question bank")
+        }
+
     });
 
+    $("#close_popup").click(function(event){
+        event.preventDefault();
+        $(".popup").css("display", "none");
+    });
+});
 
 
 

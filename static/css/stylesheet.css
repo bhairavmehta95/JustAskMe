@@ -5,12 +5,13 @@ body {
     height: 100%;
     margin: 0;
     background-color: #1f1f1f;
-    font-size: 13px;
+    font-size: 100%;
     font-family: 'Lato', 'Helvetica Neue', Arial, Helvetica, sans-serif;
     color: black;
 }
 p {
     margin-top: 30px;
+    font-size: 0.9em;
 }
 .cntr {
     display: table;
@@ -27,7 +28,7 @@ p {
 
 .user_instructions{
     color: white;
-    font-size: 24px;
+    font-size: 1.875em;
 }
 /*** STYLES ***/
 

@@ -4,6 +4,7 @@ body {
     padding-right: 10px;
     padding-bottom: 50px;
     background-color: #1f1f1f;
+    font-family: "Open Sans";
 }
 
 button {
@@ -171,6 +172,7 @@ button {
     border-width: 1px;
     box-sizing:border-box;
     width: 100%;
+    font-family: "Open Sans";
 }
 
 .submit_button_container {

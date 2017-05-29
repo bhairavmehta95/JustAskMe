@@ -5,6 +5,7 @@ body {
     padding-bottom: 50px;
     background-color: #1f1f1f;
     font-family: "Open Sans, Helvetica sans-serif";
+    font-size:22px;
 }
 
 button {
@@ -100,7 +101,7 @@ button {
     /* 5 from margin of admin tools + 2 from padding of admin tools*/
     margin-top: 7px;
     padding-left: 4px;
-    font-size: 1em;
+    /*font-size: 1em;*/
 }
 
 .timestamp {
@@ -173,7 +174,7 @@ button {
     box-sizing:border-box;
     width: 100%;
     font-family: "Open Sans, Helvetica sans-serif";
-    font-size: 16px;
+    font-size: 24px;
 }
 
 .submit_button_container {
@@ -215,7 +216,7 @@ button {
 }
 
 .validate {
-    font-size: 13px;
+    font-size: 16px;
     color: white;
     background: #1ECD97;
 }

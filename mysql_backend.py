@@ -1,7 +1,7 @@
 import MySQLdb
 
 
-db = MySQLdb.connect(host="ahhh-db.cq2tyrgbq4kh.us-west-2.rds.amazonaws.com", port=3306, user="ahhh", passwd="password", db="ahhh_db")
+db = MySQLdb.connect(host=ENV['db_host'], port=ENV['db_port'], user=ENV['db_user'], passwd=ENV['db_password'], db=ENV['db_name'])
 cursor = db.cursor()
 db.autocommit(True)
 

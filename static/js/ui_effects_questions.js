@@ -281,6 +281,18 @@ function reupdateArrows(){
     });
 }
 
+function getCorrectDate(raw_date){
+    formatted_date = (raw_date.getMonth()+1) + '/' + (raw_date.getDate()) + '/'
+                         + raw_date.getFullYear() + " ";
+
+    hours = ( (raw_date.getHours() % 12) < 10 ? "0" + raw_date.getHours() % 12 : raw_date.getHours() % 12);
+    minutes = ( (raw_date.getMinutes() < 10) ? "0" + raw_date.getMinutes() : raw_date.getMinutes());
+
+    formatted_date += hours + ":" + minutes;
+
+    return formatted_date;
+}
+
 function callUpdate(apiLocation) {
     var room_ = window.location.pathname.toString();
 
@@ -303,6 +315,8 @@ function callUpdate(apiLocation) {
             // Do something with the result
             if (obj.questions.length) {
                 for (i = 0; i < obj.questions.length; i++) {
+                    var raw_date = new Date(obj.timestamps[i]);
+                    formatted_date = getCorrectDate(raw_date);
                     // TODO: Make this into a function
                     var html_to_add = '<div class="question">\
                     <div class="question_tools">\
@@ -315,7 +329,7 @@ function callUpdate(apiLocation) {
 
                         var second_var = '<div class="admin_delete_centering" id="' + obj.unique_ids[i] + '">\
                     <div class="mark_answered">\
-                    <a href="" onclick="return false;" title="Mark as read"><i class="fa fa-check" aria-hidden="true"></i></a>\
+                    <a href="" onclick="return false;" title="Mark as answered"><i class="fa fa-check" aria-hidden="true"></i></a>\
                     </div>\
                     <div class="trash">\
                     <a href="" onclick="return false;" title="Delete permanently"><i class="fa fa-trash-o" aria-hidden="true"></i></a>\
@@ -328,7 +342,7 @@ function callUpdate(apiLocation) {
 
 
 
-                    var content = '</div><div class="question_content"> ' + obj.questions[i] + '</div> <div class="timestamp"> ' + obj.timestamps[i] + '</div> </div> </div> </div>';
+                    var content = '</div><div class="question_content"> ' + obj.questions[i] + '</div> <div class="timestamp">' + formatted_date + '</div> </div> </div> </div>';
                     $('.question_area').append(html_to_add + content); // append question_area
 
                 }
@@ -362,27 +376,29 @@ $(document).ready(function() {
         Cookies.set('downvotedIds', JSON.stringify(downvotedIds));
     }
 
-    $(".key_button").click(function(){
+    $("#key_button").click(function(){
         if ($(this).hasClass("activate")) { // TODO do not disactivate if user is an admin! This is "feedback" that user is admin
-            $('.admin_code').css("display", "none");
+            $('#admin_code_input').css("display", "none");
+            $('#admin_code_icon').css("display", "none");
             $(this).removeClass("activate");
-            $(".submit_admin_button").css("display", "none");
+            $("#submit_admin_button").css("display", "none");
 
             $("#view_options").css("display", "initial");
 
         } else {
 
             $(this).addClass("activate");
-            $('.admin_code').animate({width: 'toggle'}, {duration: 200});
-            $(".submit_admin_button").css("display", "inline");
-            $(".submit_admin_button").addClass("activate");
+            $('#admin_code_input').animate({width: 'toggle'}, {duration: 200});
+            $('#admin_code_icon').css("display", "");
+            $("#submit_admin_button").css("display", "inline");
+            $("#submit_admin_button").addClass("activate");
 
             // remove all other options
             $("#view_options").css("display", "none");
         }
     });
 
-    $(".new_question_button").click(function(){
+    $("#new_question_button").click(function(){
         if ($(this).hasClass("activate")) {
             $(this).removeClass("activate");
             $('.write_new_question').animate({height: 'toggle'}, {duration: 200});
@@ -392,7 +408,7 @@ $(document).ready(function() {
         }
     });
 
-    $(".submit_admin_button").click(function (){
+    $("#submit_admin_button").click(function (){
         // Call API, on success, animate
         var DataToSend = {
             room : window.location.pathname.toString().substr(1),
@@ -462,7 +478,7 @@ $(document).ready( function() {
     document.title = "JustAskMe" + room_;
 
     room_ = room_.substr(1, room_.length);
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    var socket = io.connect('https://' + document.domain + ':' + location.port);
 
     // send join room command
     socket.emit('join', {room: room_});
@@ -481,18 +497,21 @@ $(document).ready( function() {
         }
     });
 
-    $('.buttonSubmitQuestion').click(function(){
+    $('#buttonSubmit').click(function(){
         var room_ = window.location.pathname.toString();
         room_ = room_.substr(1, room_.length);
 
-        var new_question = $(this).parent().parent().find('.new_question_formulation').val();
-        socket.emit('my room event', {room: room_, data: new_question});
+        var new_question = $(this).parent().parent().find('#new_question_formulation').val();
 
-        $('.new_question_formulation').text('');
-        $('.new_question_button').removeClass("activate");
-        $('.write_new_question').animate({height: 'toggle'}, {duration: 200});
+        if (new_question != '') {
+            socket.emit('my room event', {room: room_, data: new_question});
 
-        $(this).parent().parent().find('.new_question_formulation').val("");
+            $('#new_question_formulation').text('');
+            $('#new_question_button').removeClass("activate");
+            $('.write_new_question').animate({height: 'toggle'}, {duration: 10});
+
+            $(this).parent().parent().find('#new_question_formulation').val("");
+        }
     });
 
 

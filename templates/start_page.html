@@ -10,8 +10,9 @@
     <link rel='stylesheet prefetch' href='https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css'>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
     <script src="{{ url_for('static', filename='js/ui_effects.js') }}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='semantic/semantic.min.css') }}">
+    <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/whynotask-bucket/semantic_all.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }} ">
 
 
@@ -24,8 +25,8 @@
             <img src="{{ url_for('static', filename='logo/logo.png') }}" alt="">
         </div>
 
-        <div class="ui inverted transparent icon input massive">
-            <input id="inpt_search" type="text" placeholder="Search...">
+        <div class="ui inverted transparent icon input massive" style="color:white">
+            <input id="inpt_search" style="color:white" type="text" placeholder="Search...">
             <i class="search icon"></i>
         </div>
 

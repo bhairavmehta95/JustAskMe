@@ -13,6 +13,8 @@
     <link rel='stylesheet prefetch' href='https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css'>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     <script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js'></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://s3-us-west-2.amazonaws.com/whynotask-bucket/semantic_all.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet_questions.css') }}">
     <script type = "text/javascript" src="{{ url_for('static', filename='js/ui_effects_questions.js') }}"></script>
 
@@ -22,32 +24,33 @@
 <!-- TODO must store here as a parameter the question's unique ID, in order to be able to delete it... -->
 <div class="question_area"></div>
 
-<div class="bottom_panel">
-    <div class="become_admin">
-        <nav class="views">
-            <ul id="view_options">
-                <li id="newest_link"><a href="" onclick="return false;">Newest</a></li>
-                <li id="top_link"><a href="" onclick="return false;">Top</a></li>
-                <li id="answered_link"><a href="" onclick="return false;">Answered</a></li>
-            </ul>
-        </nav>
-        <div class="new_question_button">
-            <i class="fa fa-comments" aria-hidden="true"></i>
+<div class="bottom_panel ui container">
+
+    <div class="ui basic buttons left floated massive">
+        <button class="ui icon button" id="newest_link">Newest</button>
+        <button class="ui icon button" id="top_link">Top</button>
+        <button class="ui icon button" id="answered_link">Answered</button>
+    </div>
+
+    <div class="ui container right floated">
+        <div class="ui basic buttons massive right floated">
+            <button class="ui icon button" id="submit_admin_button"><i class="icon check"></i></button>
+            <button class="ui icon button" id="key_button"><i class="icon key"></i></button>
+            <button class="ui icon button" id="new_question_button"><i class="icon comment"></i></button>
         </div>
-        <div class="key_button" id="key_button">
-            <i class="fa fa-key" aria-hidden="true"></i>
-        </div>
-        <div class="submit_admin_button" id="submit_admin_button">
-            <i class="fa fa-check" aria-hidden="true"></i>
-        </div>
-        <div class="admin_code">
-            <input type="text" name="admin_code_input" id="admin_code_input" placeholder="Enter admin code">
+        <div class="ui left icon input large" style="float:right;">
+            <input id="admin_code_input" style="display: none; font-size:18px;"  type="text" placeholder="Enter admin code">
+            <i id="admin_code_icon" style="display: none;"  class="users icon"></i>
         </div>
     </div>
-    <div class="write_new_question">
-        <textarea class="new_question_formulation" name="new_question_formulation" maxlength="250" placeholder="Type your question, which will be posted to the question bank completely anonymously"></textarea>
+
+
+    <div class="ui container write_new_question" style="margin-top: 60px; padding: 10px">
+        <div class="ui fluid icon input">
+          <input id="new_question_formulation" type="text" placeholder="Type your question here...">
+        </div>
         <div class="submit_button_container">
-            <button id="buttonSubmit" class="buttonSubmitQuestion"></button>
+            <button class="ui right floated button" id="buttonSubmit" style="margin-top: 10px">SUBMIT</button>
         </div>
     </div>
 </div>

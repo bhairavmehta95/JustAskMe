@@ -1,7 +1,8 @@
 import MySQLdb
+import os
 
-
-db = MySQLdb.connect(host="ahhh-db.cq2tyrgbq4kh.us-west-2.rds.amazonaws.com", port=3306, user="ahhh", passwd="password", db="ahhh_db")
+db = MySQLdb.connect(host=os.environ.get('db_host'), port=int(os.environ.get('db_port')), user=os.environ.get('db_user')
+                     , passwd=os.environ.get('db_password'), db=os.environ.get('db_name'))
 cursor = db.cursor()
 db.autocommit(True)
 

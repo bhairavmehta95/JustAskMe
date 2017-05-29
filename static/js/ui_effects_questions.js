@@ -478,7 +478,7 @@ $(document).ready( function() {
     document.title = "JustAskMe" + room_;
 
     room_ = room_.substr(1, room_.length);
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    var socket = io.connect('https://' + document.domain + ':' + location.port);
 
     // send join room command
     socket.emit('join', {room: room_});

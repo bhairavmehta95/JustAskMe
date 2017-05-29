@@ -1,7 +1,7 @@
 import MySQLdb
+import os
 
-
-db = MySQLdb.connect(host=ENV['db_host'], port=ENV['db_port'], user=ENV['db_user'], passwd=ENV['db_password'], db=ENV['db_name'])
+db = MySQLdb.connect(host=os.environ.get('db_host'), port=os.environ.get('db_port'), user=os.environ.get('db_user'), passwd=os.environ.get('db_password'), db=os.environ.get('db_name'))
 cursor = db.cursor()
 db.autocommit(True)
 

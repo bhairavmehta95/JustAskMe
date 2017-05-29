@@ -378,7 +378,8 @@ $(document).ready(function() {
 
     $("#key_button").click(function(){
         if ($(this).hasClass("activate")) { // TODO do not disactivate if user is an admin! This is "feedback" that user is admin
-            $('#admin_code').css("display", "none");
+            $('#admin_code_input').css("display", "none");
+            $('#admin_code_icon').css("display", "none");
             $(this).removeClass("activate");
             $("#submit_admin_button").css("display", "none");
 
@@ -387,7 +388,8 @@ $(document).ready(function() {
         } else {
 
             $(this).addClass("activate");
-            $('#admin_code').animate({width: 'toggle'}, {duration: 200});
+            $('#admin_code_input').animate({width: 'toggle'}, {duration: 200});
+            $('#admin_code_icon').css("display", "");
             $("#submit_admin_button").css("display", "inline");
             $("#submit_admin_button").addClass("activate");
 
@@ -476,7 +478,7 @@ $(document).ready( function() {
     document.title = "JustAskMe" + room_;
 
     room_ = room_.substr(1, room_.length);
-    var socket = io.connect('https://' + document.domain + ':' + location.port);
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
 
     // send join room command
     socket.emit('join', {room: room_});
@@ -499,16 +501,16 @@ $(document).ready( function() {
         var room_ = window.location.pathname.toString();
         room_ = room_.substr(1, room_.length);
 
-        var new_question = $(this).parent().parent().find('.new_question_formulation').val();
+        var new_question = $(this).parent().parent().find('#new_question_formulation').val();
 
         if (new_question != '') {
             socket.emit('my room event', {room: room_, data: new_question});
 
-            $('.new_question_formulation').text('');
-            $('.new_question_button').removeClass("activate");
+            $('#new_question_formulation').text('');
+            $('#new_question_button').removeClass("activate");
             $('.write_new_question').animate({height: 'toggle'}, {duration: 10});
 
-            $(this).parent().parent().find('.new_question_formulation').val("");
+            $(this).parent().parent().find('#new_question_formulation').val("");
         }
     });
 

@@ -4,7 +4,7 @@ body {
     padding-right: 10px;
     padding-bottom: 50px;
     background-color: #1f1f1f;
-    font-family: "Open Sans, Helvetica sans-serif";
+    font-family: "Open Sans", Helvetica sans-serif;
     font-size:22px;
 }
 
@@ -154,7 +154,6 @@ button {
 }
 
 #admin_code {
-    float: right;
     display: none;
 }
 
@@ -163,7 +162,6 @@ button {
 
 .write_new_question {
     display: none;
-    padding: 10px;
 }
 
 .new_question_formulation {
@@ -173,7 +171,7 @@ button {
     border-width: 1px;
     box-sizing:border-box;
     width: 100%;
-    font-family: "Open Sans, Helvetica sans-serif";
+    font-family: "Open Sans", Helvetica sans-serif;
     font-size: 24px;
 }
 

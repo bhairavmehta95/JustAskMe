@@ -23,28 +23,33 @@
 <!-- TODO must store here as a parameter the question's unique ID, in order to be able to delete it... -->
 <div class="question_area"></div>
 
-<div class="bottom_panel">
-    <div class="ui basic buttons massive" id="view-group">
+<div class="bottom_panel ui container">
+
+    <div class="ui basic buttons left floated massive">
         <button class="ui icon button" id="newest_link">Newest</button>
         <button class="ui icon button" id="top_link">Top</button>
         <button class="ui icon button" id="answered_link">Answered</button>
     </div>
 
-    <div class="ui basic buttons massive" id="utility-group">
-        <button class="ui icon button" id="submit_admin_button"><i class="icon check"></i></button>
-        <button class="ui icon button" id="key_button"><i class="icon key"></i></button>
-        <button class="ui icon button" id="new_question_button"><i class="icon comment"></i></button>
+    <div class="ui container right floated">
+        <div class="ui basic buttons massive right floated">
+            <button class="ui icon button" id="submit_admin_button"><i class="icon check"></i></button>
+            <button class="ui icon button" id="key_button"><i class="icon key"></i></button>
+            <button class="ui icon button" id="new_question_button"><i class="icon comment"></i></button>
+        </div>
+        <div class="ui left icon input large" style="float:right">
+            <input id="admin_code_input" style="display: none;"  type="text" placeholder="Enter admin code">
+            <i id="admin_code_icon" style="display: none;"  class="users icon"></i>
+        </div>
     </div>
 
-    <div class="ui left icon input massive" id="admin_code">
-        <input id="admin_code_input" type="text" placeholder="Enter admin code">
-        <i class="users icon"></i>
-    </div>
 
-    <div class="write_new_question">
-        <textarea class="new_question_formulation" name="new_question_formulation" maxlength="80" placeholder="Type your question, which will be posted to the question bank completely anonymously"></textarea>
+    <div class="ui container write_new_question" style="margin-top: 60px; padding: 10px">
+        <div class="ui fluid icon input">
+          <input id="new_question_formulation" type="text" placeholder="Type your question here...">
+        </div>
         <div class="submit_button_container">
-            <button class="ui right floated button" id="buttonSubmit">SUBMIT</button>
+            <button class="ui right floated button" id="buttonSubmit" style="margin-top: 10px">SUBMIT</button>
         </div>
     </div>
 </div>

@@ -1,6 +1,20 @@
 from flask import *
+import os
+
+if not os.environ.get('db_host'):
+    import config
+
+    os.environ['db_host'] = config.DB_HOST
+    os.environ['db_user'] = config.DB_USER
+    os.environ['db_password'] = config.DB_PASS
+    os.environ['db_name'] = config.DB_NAME
+    os.environ['db_port'] = '3306'
+
+
 import random, string
 import re
+
+
 
 from socket_utility import *
 

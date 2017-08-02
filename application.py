@@ -255,7 +255,7 @@ def reply():
     question = question.split()
 
     namespace = question[0].lower()
-    question = ' '.join(body[1:])
+    question = ' '.join(question[1:])
 
     add_question(question, namespace)
 

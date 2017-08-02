@@ -39,15 +39,15 @@
             <button class="ui icon button" id="new_question_button"><i class="icon comment"></i></button>
         </div>
         <div class="ui left icon input large" style="float:right;">
-            <input id="admin_code_input" style="display: none; font-size:18px;"  type="text" placeholder="Enter admin code">
+            <input id="admin_code_input" style="display: none;"  type="text" placeholder="Enter admin code">
             <i id="admin_code_icon" style="display: none;"  class="users icon"></i>
         </div>
     </div>
 
 
     <div class="ui container write_new_question" style="margin-top: 60px; padding: 10px">
-        <div class="ui fluid icon input">
-          <input id="new_question_formulation" type="text" placeholder="Type your question here...">
+        <div class="ui fluid input">
+          <input id="new_question_formulation" maxlength="80" type="text" style="font-size:18px; width: 80%" placeholder="Type your question here...">
         </div>
         <div class="submit_button_container">
             <button class="ui right floated button" id="buttonSubmit" style="margin-top: 10px">SUBMIT</button>

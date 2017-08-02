@@ -523,7 +523,6 @@ $(document).ready( function() {
         $(".popup").css("display", "none");
     });
 
-
 });
 
 // Every five seconds, see if it is not in focus

@@ -251,10 +251,16 @@ def sort_top():
 
 @application.route('/sms', methods=['GET', 'POST'])
 def reply():
-    print("SMS Received")
-    print(request.form['Body'])
+    question = request.form['Body']
+    question = question.split()
+
+    namespace = body[0].lower()
+    question = ' '.join(body[1:])
+
+    add_question(question, namespace)
+
     resp = MessagingResponse()
-    resp.message("Hello!")
+    resp.message("Your question has been sent to {}!".format(namespace))
 
     return str(resp)
 

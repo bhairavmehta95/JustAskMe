@@ -514,6 +514,15 @@ $(document).ready( function() {
         }
     });
 
+    $('#text_msg_number').click(function(){
+        $('.popup').show("slow");
+    })
+
+    $("#close_popup").click(function(event){
+        event.preventDefault();
+        $(".popup").css("display", "none");
+    });
+
 
 });
 

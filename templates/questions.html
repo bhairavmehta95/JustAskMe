@@ -30,6 +30,7 @@
         <button class="ui icon button" id="newest_link">Newest</button>
         <button class="ui icon button" id="top_link">Top</button>
         <button class="ui icon button" id="answered_link">Answered</button>
+        <button class="ui icon button" id="text_msg_number"><i class="icon mobile"></i></button>
     </div>
 
     <div class="ui container right floated">
@@ -53,6 +54,20 @@
             <button class="ui right floated button" id="buttonSubmit" style="margin-top: 10px">SUBMIT</button>
         </div>
     </div>
+</div>
+
+<div class="popup">
+    <a id="close_popup" href="" class="close">
+        <i class="fa fa-times" aria-hidden="true"></i>
+    </a>
+
+    <p class="questionbank_name">
+        Text us your question starting with {{ session['room_name'] }} at
+    </p>
+
+    <p class="administrator_pass">
+        (732) 912 - 7821
+    </p>
 </div>
 
 </body>

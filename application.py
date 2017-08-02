@@ -34,6 +34,8 @@ def room(room):
             add_admin(new_passw, room)     # Add a new admin to the admin table
         else:
             return redirect(room)
+
+    session['room_name'] = room
     return render_template('questions.html')
 
 @application.route('/api/genAdminPw', methods=['POST'])

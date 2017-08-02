@@ -250,7 +250,7 @@ def sort_top():
         'upvotes': order['upvotes']
     })
 
-@applocation.route('/sms', methods=['GET', 'POST'])
+@application.route('/sms', methods=['GET', 'POST'])
 def reply():
     print(response['Body'])
     resp = MessagingResponse()

@@ -9,3 +9,7 @@ Just Ask Me currently provides a fully anonymous and streamlined ("bare bones") 
 ## Roadmap
 
 The software is expected to grow to include features like message alert, better message filtering (e.g. question matching) and better message editing and customization (such as the support for LaTeX and computer code). Anonymity and minimal-clicks-to-action will remain the overarching drivers of this project. 
+
+## Updates
+
+* August 2017 - Now with text message support, powered by Twilio!

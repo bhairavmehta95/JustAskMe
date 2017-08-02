@@ -14,8 +14,7 @@ if not os.environ.get('db_host'):
 import random, string
 import re
 
-
-
+from twilio.twiml.messaging_response import MessagingResponse
 from socket_utility import *
 
 
@@ -35,6 +34,8 @@ def room(room):
             add_admin(new_passw, room)     # Add a new admin to the admin table
         else:
             return redirect(room)
+
+    session['room_name'] = room
     return render_template('questions.html')
 
 @application.route('/api/genAdminPw', methods=['POST'])
@@ -250,11 +251,18 @@ def sort_top():
         'upvotes': order['upvotes']
     })
 
-@applocation.route('/sms', methods=['GET', 'POST'])
+@application.route('/sms', methods=['GET', 'POST'])
 def reply():
-    print(response['Body'])
+    question = request.form['Body']
+    question = question.split()
+
+    namespace = question[0].lower()
+    question = ' '.join(question[1:])
+
+    add_question(question, namespace)
+
     resp = MessagingResponse()
-    resp.message("Hello!")
+    resp.message("Your question has been sent to {}!".format(namespace))
 
     return str(resp)
 

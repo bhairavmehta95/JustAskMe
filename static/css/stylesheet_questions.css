@@ -244,3 +244,43 @@ button {
         transform: rotate(360deg);
     }
 }
+
+.popup {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -40%);
+    background-color: white;
+    width:400px;
+    border:1px solid #e5e5e5;
+    -webkit-box-shadow: 0px 0px 7px -1px rgba(0,0,0,0.62);
+    -moz-box-shadow: 0px 0px 7px -1px rgba(0,0,0,0.62);
+    box-shadow: 0px 0px 7px -1px rgba(0,0,0,0.62);
+    display: none;
+}
+
+.questionbank_name,
+.administrator_pass {
+    color:black;
+    font-size:1.0em;
+    text-align:center;
+    font-weight:bold;
+    /*line-height:26px;*/
+    padding: 7px;
+    margin-top:10px;
+}
+
+.questionbank_name{
+    border-top: solid 1px #e8e2d9;
+    padding-top: 10px;
+}
+
+a.close {
+    color: black;
+    float: right;
+    margin: 5px;
+}
+
+a.close:hover {
+    color: red;
+}

@@ -538,7 +538,7 @@ $(document).ready(function() {
     });
 
     setInterval(function() {
-        if (window_focus == false){
+        // if (window_focus == false){
             var ordering = getCookie("ordering");
 
             if (ordering == "top"){
@@ -550,6 +550,6 @@ $(document).ready(function() {
             else {
                 callUpdate('api/getRowsChron');
             }
-        }
-    }, 5000);
+        // }
+    }, 4000);
 });

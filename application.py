@@ -254,7 +254,7 @@ def reply():
     question = request.form['Body']
     question = question.split()
 
-    namespace = body[0].lower()
+    namespace = question[0].lower()
     question = ' '.join(body[1:])
 
     add_question(question, namespace)

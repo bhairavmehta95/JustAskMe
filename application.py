@@ -250,6 +250,14 @@ def sort_top():
         'upvotes': order['upvotes']
     })
 
+@applocation.route('/sms', methods=['GET', 'POST'])
+def reply():
+    print(response['Body'])
+    resp = MessagingResponse()
+    resp.message("Hello!")
+
+    return str(resp)
+
 
 if __name__ == '__main__':
     sio.run(application)

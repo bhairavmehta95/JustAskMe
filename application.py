@@ -251,7 +251,8 @@ def sort_top():
 
 @application.route('/sms', methods=['GET', 'POST'])
 def reply():
-    print(request.data)
+    print("SMS Received")
+    print(request.form['Body'])
     resp = MessagingResponse()
     resp.message("Hello!")
 

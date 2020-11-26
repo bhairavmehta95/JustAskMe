@@ -14,7 +14,6 @@ if not os.environ.get('db_host'):
 import random, string
 import re
 
-from twilio.twiml.messaging_response import MessagingResponse
 from socket_utility import *
 
 
@@ -253,18 +252,7 @@ def sort_top():
 
 @application.route('/sms', methods=['GET', 'POST'])
 def reply():
-    question = request.form['Body']
-    question = question.split()
-
-    namespace = question[0].lower()
-    question = ' '.join(question[1:])
-
-    add_question(question, namespace)
-
-    resp = MessagingResponse()
-    resp.message("Your question has been sent to {}!".format(namespace))
-
-    return str(resp)
+    pass
 
 
 if __name__ == '__main__':

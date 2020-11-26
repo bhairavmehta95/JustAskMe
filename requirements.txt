@@ -13,5 +13,3 @@ Werkzeug==0.12.1
 flask-socketio==2.7.2
 eventlet==0.17.4
 gevent-websocket==0.10.1
-twilio==6.5.0
-
